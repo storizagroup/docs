@@ -39,13 +39,14 @@ VERBOSE=1 node scripts/sync-openapi.mjs       # also list what was left out
 
 It rewrites `openapi.json` **and** the API Reference sidebar in `docs.json`. Commit both. Node 18 or later, no dependencies.
 
-What gets published is decided in `scripts/openapi-rules.mjs`:
+What gets published is decided in `scripts/openapi-rules.mjs`, and it is an **allow-list**:
 
-- An endpoint is published when an **API key** can call it, or when it is **public** (the plan and template catalog).
-- Staff tools, dashboard-only routes (login, account security, API-key management), webhooks and anything in `EXCLUDED_OPERATIONS` are left out.
-- WebSocket and streaming endpoints are left out of the reference — a playground cannot open them — and documented in `guides/realtime.mdx`.
-- `GROUPS` decides the sidebar sections and their order. A new endpoint that matches no group stops the script with an error, so nothing is published unplaced.
-- `DESCRIPTION_REWRITES` removes wording about internals from the API's own descriptions.
+- `PUBLISHED` lists every endpoint in the reference, grouped and ordered exactly as the sidebar shows them. Nothing else in the API is published — staff tools, dashboard-only routes, features customers do not have (deleting a server or an app, managed users), support tickets, the reseller program and the checkout flows (top-ups, gift cards, coupons, paying a transaction) all stay private.
+- A new API endpoint is **not** published until someone adds it to `PUBLISHED`. `VERBOSE=1` lists everything left out, to review.
+- The script stops without writing anything if a listed endpoint has disappeared from the API, or cannot be called with an API key.
+- `PUBLIC` marks the catalog endpoints that need no key; `SELF_AUTHENTICATED` the VPS routes that take a key although the spec does not say so.
+- `DESCRIPTION_REWRITES` and `HIDDEN_REQUEST_FIELDS` remove wording and fields about internals and staff-only behaviour from the API's own descriptions.
+- WebSocket and streaming endpoints are documented in `guides/realtime.mdx` instead — a playground cannot open them.
 
 ## Deploying
 

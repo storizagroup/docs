@@ -107,7 +107,3 @@ That example installs dependencies from `package.json` on every start, then runs
 ## Upload your code
 
 Use the [file API or SFTP](/guides/app-files-and-console) to put your project into the app's volume. The volume is the working directory, so relative paths in your code resolve against it.
-
-## Deleting an app
-
-`DELETE /apps/{id}` removes the app **and all the data in its volume**. Take a backup first (`POST /apps/{id}/backups`) if you might need it.

@@ -92,55 +92,47 @@
             "group": "Servers",
             "pages": [
               "GET /vps/",
-              "POST /vps/",
-              "POST /vps/{id}/renew",
-              "POST /vps/{id}/upgrade",
               "GET /vps/{vmId}",
-              "PUT /vps/{vmId}",
-              "DELETE /vps/{vmId}",
-              "POST /vps/order"
+              "POST /vps/",
+              "POST /vps/order",
+              "POST /vps/{id}/renew",
+              "POST /vps/{id}/upgrade"
             ]
           },
           {
             "group": "Server power & commands",
             "pages": [
-              "POST /vps/{vmId}/execute",
-              "POST /vps/{vmId}/kill",
-              "POST /vps/{vmId}/reboot",
               "POST /vps/{vmId}/start",
+              "POST /vps/{vmId}/stop",
+              "POST /vps/{vmId}/reboot",
+              "POST /vps/{vmId}/kill",
               "GET /vps/{vmId}/status",
-              "POST /vps/{vmId}/stop"
+              "POST /vps/{vmId}/execute"
             ]
           },
           {
             "group": "Server settings",
             "pages": [
               "PUT /vps/{vmId}/info",
-              "GET /vps/{vmId}/provision",
-              "POST /vps/{vmId}/reinstall"
+              "POST /vps/{vmId}/reinstall",
+              "GET /vps/{vmId}/provision"
             ]
           },
           {
             "group": "Server firewall",
             "pages": [
               "GET /vps/{vmId}/firewall",
-              "PUT /vps/{vmId}/firewall/options",
-              "POST /vps/{vmId}/firewall/rules",
-              "PUT /vps/{vmId}/firewall/rules/{ruleId}",
-              "DELETE /vps/{vmId}/firewall/rules/{ruleId}",
-              "POST /vps/{vmId}/firewall/template",
               "PUT /vps/{vmId}/firewall/toggle",
+              "POST /vps/{vmId}/firewall/rules",
+              "DELETE /vps/{vmId}/firewall/rules/{ruleId}",
               "GET /vps/firewall/presets"
             ]
           },
           {
             "group": "Server metrics",
             "pages": [
-              "GET /vps/{vmId}/metrics/alerts",
               "GET /vps/{vmId}/metrics/current",
-              "GET /vps/{vmId}/metrics/historical",
-              "GET /vps/{vmId}/metrics/overview",
-              "GET /vps/{vmId}/metrics/summary"
+              "GET /vps/{vmId}/metrics/historical"
             ]
           },
           {
@@ -149,9 +141,7 @@
               "POST /vps/{id}/backups/order",
               "GET /vps/{vpsId}/backups",
               "POST /vps/{vpsId}/backups",
-              "GET /vps/{vpsId}/backups/{backupId}",
-              "DELETE /vps/{vpsId}/backups/{backupId}",
-              "POST /vps/{vpsId}/backups/{backupId}/check-status"
+              "DELETE /vps/{vpsId}/backups/{backupId}"
             ]
           },
           {
@@ -159,7 +149,6 @@
             "pages": [
               "GET /vps/{vpsId}/snapshots",
               "POST /vps/{vpsId}/snapshots",
-              "GET /vps/{vpsId}/snapshots/{snapshotId}",
               "DELETE /vps/{vpsId}/snapshots/{snapshotId}"
             ]
           },
@@ -167,52 +156,44 @@
             "group": "Server sharing",
             "pages": [
               "GET /vps/{vmId}/share",
-              "POST /vps/{vmId}/share/generate",
-              "GET /vps/{vpsId}/members",
-              "POST /vps/{vpsId}/members",
-              "DELETE /vps/{vpsId}/members/{userId}",
-              "POST /vps/validate"
+              "POST /vps/{vmId}/share/generate"
             ]
           },
           {
             "group": "Server catalog",
             "pages": [
-              "GET /vps-backup-plans/",
-              "GET /vps-backup-plans/{id}",
-              "GET /vps-categories/",
-              "GET /vps-datacenters/",
-              "GET /vps-datacenters/{datacenterId}/",
-              "GET /vps-plans/{id}",
               "GET /vps-plans/public",
-              "GET /vps-templates/"
+              "GET /vps-categories/",
+              "GET /vps-templates/",
+              "GET /vps-datacenters/",
+              "GET /vps-backup-plans/"
             ]
           },
           {
             "group": "Apps",
             "pages": [
               "GET /apps/",
-              "POST /apps/",
               "GET /apps/{id}",
+              "POST /apps/",
+              "POST /apps/order",
               "PATCH /apps/{id}",
-              "DELETE /apps/{id}",
+              "PATCH /apps/{id}/environment",
               "PATCH /apps/{id}/command",
               "POST /apps/{id}/command/preview",
-              "PATCH /apps/{id}/environment",
               "POST /apps/{id}/reinstall",
-              "POST /apps/{id}/renew",
-              "POST /apps/order"
+              "POST /apps/{id}/renew"
             ]
           },
           {
             "group": "App lifecycle & console",
             "pages": [
-              "POST /apps/{id}/exec",
-              "POST /apps/{id}/lifecycle/kill",
-              "POST /apps/{id}/lifecycle/restart",
               "POST /apps/{id}/lifecycle/start",
               "POST /apps/{id}/lifecycle/stop",
+              "POST /apps/{id}/lifecycle/restart",
+              "POST /apps/{id}/lifecycle/kill",
               "GET /apps/{id}/logs",
               "GET /apps/{id}/metrics",
+              "POST /apps/{id}/exec",
               "POST /apps/{id}/stdin"
             ]
           },
@@ -220,16 +201,16 @@
             "group": "App files",
             "pages": [
               "GET /apps/{id}/files",
-              "DELETE /apps/{id}/files",
+              "GET /apps/{id}/files/text",
               "GET /apps/{id}/files/content",
               "PUT /apps/{id}/files/content",
-              "POST /apps/{id}/files/copy",
               "POST /apps/{id}/files/mkdir",
               "POST /apps/{id}/files/move",
-              "GET /apps/{id}/files/text",
+              "POST /apps/{id}/files/copy",
+              "DELETE /apps/{id}/files",
               "GET /apps/{id}/sftp",
-              "POST /apps/{id}/sftp/disable",
               "POST /apps/{id}/sftp/enable",
+              "POST /apps/{id}/sftp/disable",
               "POST /apps/{id}/sftp/regenerate"
             ]
           },
@@ -245,7 +226,7 @@
             ]
           },
           {
-            "group": "App domains & ports",
+            "group": "App domains",
             "pages": [
               "GET /apps/{id}/exposures",
               "POST /apps/{id}/exposures",
@@ -259,10 +240,6 @@
             "pages": [
               "GET /apps-groups/",
               "POST /apps-groups/",
-              "GET /apps-groups/{groupId}",
-              "PATCH /apps-groups/{groupId}",
-              "DELETE /apps-groups/{groupId}",
-              "GET /apps-groups/{groupId}/apps",
               "GET /apps/{id}/group",
               "PUT /apps/{id}/group"
             ]
@@ -270,12 +247,9 @@
           {
             "group": "App catalog",
             "pages": [
-              "GET /apps-nodes/",
-              "GET /apps-nodes/{id}",
-              "GET /apps-nodes/{id}/capacity",
-              "GET /apps-nodes/{id}/health",
+              "GET /apps-templates/",
               "GET /apps-plans/",
-              "GET /apps-templates/"
+              "GET /apps-nodes/"
             ]
           },
           {
@@ -283,102 +257,36 @@
             "pages": [
               "GET /payments/subscriptions",
               "GET /payments/subscriptions/{id}",
-              "POST /payments/subscriptions/{id}",
+              "PATCH /payments/subscriptions/{id}/period",
               "DELETE /payments/subscriptions/{id}",
-              "GET /payments/subscriptions/{id}/manage",
-              "POST /payments/subscriptions/{id}/payment-method",
-              "PATCH /payments/subscriptions/{id}/period"
+              "POST /payments/subscriptions/{id}",
+              "GET /payments/subscriptions/{id}/manage"
             ]
           },
           {
-            "group": "Transactions & invoices",
+            "group": "Payments",
             "pages": [
               "GET /payments/transactions",
               "GET /payments/transactions/{id}",
-              "POST /payments/transactions/{id}",
-              "DELETE /payments/transactions/{id}",
-              "GET /payments/transactions/{id}/invoice",
-              "GET /payments/transactions/{id}/status"
-            ]
-          },
-          {
-            "group": "Billing",
-            "pages": [
-              "POST /payments/coupons/{code}",
-              "GET /payments/currencies",
+              "GET /payments/transactions/{id}/status",
               "GET /payments/methods",
-              "POST /payments/topup"
-            ]
-          },
-          {
-            "group": "Gift cards",
-            "pages": [
-              "GET /payments/giftcards",
-              "GET /payments/giftcards/{code}",
-              "POST /payments/giftcards/{id}/regenerate",
-              "POST /payments/giftcards/buy",
-              "POST /payments/giftcards/redeem",
-              "GET /payments/giftcards/values"
+              "GET /payments/currencies"
             ]
           },
           {
             "group": "Account",
             "pages": [
               "GET /profile/information",
-              "GET /resources/search",
               "GET /resources/summary",
-              "GET /resources/top"
+              "GET /resources/top",
+              "GET /resources/search"
             ]
           },
           {
             "group": "SSH keys",
             "pages": [
               "GET /sshkeys/",
-              "POST /sshkeys/",
-              "GET /sshkeys/{id}",
-              "PATCH /sshkeys/{id}",
-              "DELETE /sshkeys/{id}"
-            ]
-          },
-          {
-            "group": "Managed users",
-            "pages": [
-              "GET /managed-users/",
-              "POST /managed-users/",
-              "DELETE /managed-users/{userId}",
-              "PATCH /managed-users/{userId}/password",
-              "PATCH /managed-users/{userId}/vps-access",
-              "POST /managed-users/{vpsId}/members",
-              "DELETE /managed-users/{vpsId}/members/{userId}"
-            ]
-          },
-          {
-            "group": "Support",
-            "pages": [
-              "GET /support/tickets",
-              "POST /support/tickets",
-              "GET /support/tickets/{id}",
-              "POST /support/tickets/{id}/close",
-              "GET /support/tickets/{id}/messages",
-              "POST /support/tickets/{id}/messages",
-              "GET /support/unread"
-            ]
-          },
-          {
-            "group": "Reseller",
-            "pages": [
-              "GET /reseller-accounts/",
-              "POST /reseller-accounts/",
-              "DELETE /reseller-accounts/{accountId}",
-              "PATCH /reseller-accounts/{accountId}/password",
-              "PUT /reseller-accounts/{accountId}/vps",
-              "POST /reseller/apply",
-              "GET /reseller/status",
-              "GET /reseller/store",
-              "POST /reseller/store",
-              "PATCH /reseller/store",
-              "GET /reseller/store/domain-status",
-              "POST /reseller/store/icon"
+              "POST /sshkeys/"
             ]
           }
         ]

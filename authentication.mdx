@@ -46,10 +46,10 @@ A permission is `<area>:<action>`. **Read** lets a key look; **Manage** (`:write
 | --- | --- | --- |
 | **VPS** — `vps` | Servers, backups, snapshots, metrics, plans and templates. | Create, modify, power-cycle and delete servers and their backups. |
 | **Apps** — `apps` | Apps, their files, domains, metrics and backups. | Deploy, modify, power-cycle and delete apps, files, domains and backups. |
-| **Billing** — `billing` | Transactions, invoices, subscriptions, payment methods and currencies. | Create, pay and cancel transactions and subscriptions; redeem coupons and gift cards. |
-| **Account** — `account` | Profile, managed users and resource summaries. | Managed users and SSH keys. |
-| **Reseller** — `reseller` | Reseller status, store and sub-accounts. | Apply as a reseller, manage the store and sub-accounts. |
-| **Support** — `support` | Your tickets and their messages. | Open, reply to and close tickets. |
+| **Billing** — `billing` | Subscriptions, payments and their status, payment methods and currencies. | Change how often a subscription renews, cancel it or resume it. |
+| **Account** — `account` | Your profile, resource summaries and SSH keys. | Add SSH keys. |
+
+The dashboard offers a few more permissions — for support tickets and the reseller program, for example. Those areas are used from the dashboard and are not part of the public API, so a key does not need them.
 
 <Tip>
   Grant the least that works. A monitoring script needs `vps:read`, not `vps:write`. A key that can only read cannot delete a server, however it is misused.

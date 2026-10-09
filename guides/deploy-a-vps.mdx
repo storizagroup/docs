@@ -93,8 +93,7 @@ A VPS is a virtual machine with its own IP address and full root (Linux) or admi
 | Reinstall the operating system | `POST /vps/{vmId}/reinstall` — **erases the disk** |
 | Bigger plan | `POST /vps/{id}/upgrade` (try `"dryRun": true` first) |
 | Renew now | `POST /vps/{id}/renew` |
-| Give someone else access | `POST /vps/{vpsId}/members`, or a managed user with `/managed-users/` |
-| Delete | `DELETE /vps/{vmId}` — **permanent** |
+| Share it with someone | `POST /vps/{vmId}/share/generate` |
 
 ### Running a command
 

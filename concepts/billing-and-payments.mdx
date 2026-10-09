@@ -14,7 +14,7 @@ icon: "credit-card"
     Attached to every server, app and backup add-on. Says how often it renews — 7, 14, 30 or 90 days — what it costs, and until when it is paid.
   </Card>
   <Card title="Transaction" icon="receipt">
-    One payment: a top-up, a purchase or a renewal. Has a status and, once paid, an invoice.
+    One payment: a top-up, a purchase or a renewal, with its status.
   </Card>
   <Card title="Payment method" icon="credit-card">
     How a transaction is paid — balance, card, cryptocurrency and others. `GET /payments/methods` lists the ones you can use.
@@ -33,7 +33,7 @@ Servers and apps can each be created two ways. The request body is the same; onl
 | You get back | The new server or app. | The transaction, with `checkoutUrl` to pay at. |
 | When it exists | Now. | Once the payment completes — `provisionId` on the transaction is then the new server's or app's id. |
 
-Paying from balance is the simplest for automation: top your balance up once, then create without any checkout. If the balance is too low, the request is refused and nothing is charged.
+Paying from balance is the simplest for automation: top your balance up in the dashboard, then create without any checkout. If the balance is too low, the request is refused and nothing is charged.
 
 ### Following an order
 
@@ -49,20 +49,13 @@ curl https://api.storiza.store/payments/transactions/TRANSACTION_ID/status \
   -H "Authorization: Bearer $STORIZA_API_KEY"
 ```
 
-`/status` is built for polling every few seconds. When the transaction is `completed`, read it with `GET /payments/transactions/{id}` — `provisionId` is the id of what was created. A transaction left unpaid can be cancelled with `DELETE /payments/transactions/{id}`; nothing is built and nothing is charged.
+`/status` is built for polling every few seconds. When the transaction is `completed`, read it with `GET /payments/transactions/{id}` — `provisionId` is the id of what was created. A transaction that is never paid simply expires — nothing is built and nothing is charged.
 
 Transaction statuses: `pending` → `processing` → `completed`, or `failed`, `cancelled`, `refunded`.
 
 ## Topping up your balance
 
-```bash
-curl -X POST https://api.storiza.store/payments/topup \
-  -H "Authorization: Bearer $STORIZA_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{ "amount": 25, "method": "…", "currency": "USD" }'
-```
-
-This returns a transaction to pay, exactly like an order. The balance is credited when it completes. Gift cards are redeemed with `POST /payments/giftcards/redeem` instead.
+Top up from the dashboard, under **Billing**, with any payment method shown there. Once there is money on the balance, creating and renewing through the API needs no checkout at all.
 
 ## Currencies
 

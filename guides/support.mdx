@@ -1,20 +1,17 @@
 ---
 title: "Getting help"
-description: "Open a ticket from the dashboard, by email or through the API."
+description: "Open a ticket from the dashboard or by email."
 icon: "life-buoy"
 ---
 
 ## Contact support
 
-<CardGroup cols={3}>
+<CardGroup cols={2}>
   <Card title="Dashboard" icon="layout-dashboard" href="https://dashboard.storiza.store/support">
     Open a ticket and follow the conversation.
   </Card>
   <Card title="Email" icon="mail" href="mailto:support@storiza.store">
     Write to support@storiza.store — your email becomes a ticket.
-  </Card>
-  <Card title="API" icon="square-terminal" href="#tickets-from-the-api">
-    Open and answer tickets from your own tools.
   </Card>
 </CardGroup>
 
@@ -25,24 +22,3 @@ A ticket is one conversation, whichever way you use: reply by email to a ticket 
 - **Which server or app** — its name and id.
 - **What you did, what you expected, what happened instead.**
 - **For API problems:** the endpoint, the time, the HTTP status and the full error body — especially `code`. Never include your API key.
-
-## Tickets from the API
-
-With a key holding `support:write`:
-
-```bash
-curl -X POST https://api.storiza.store/support/tickets \
-  -H "Authorization: Bearer $STORIZA_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{ "subject": "Server web-1 unreachable", "message": "Since 14:00 UTC the server does not answer on port 443.", "priority": "normal" }'
-```
-
-| Task | Endpoint |
-| --- | --- |
-| List your tickets | `GET /support/tickets` |
-| Read a conversation | `GET /support/tickets/{id}/messages` |
-| Reply | `POST /support/tickets/{id}/messages` |
-| Close | `POST /support/tickets/{id}/close` |
-| Count unread replies | `GET /support/unread` |
-
-Replying to a closed ticket opens it again.

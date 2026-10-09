@@ -23,7 +23,7 @@ Every successful response has the same shape:
 | `data` | The result: an object, or an array for list endpoints. |
 | `pagination` | Present on list endpoints only. See [Pagination and filtering](/concepts/pagination-and-filtering). |
 
-A few endpoints return a file rather than JSON — downloading an invoice, a backup or an app's file. Their pages say so.
+A few endpoints return a file rather than JSON — downloading a backup or an app's file. Their pages say so.
 
 ## Errors
 
@@ -85,4 +85,4 @@ A request whose body, query or path parameters do not match what the endpoint ex
 
 - **Reads** (`GET`) are always safe to retry.
 - **Power actions and updates** (start, stop, restart, renaming, settings) can be retried — doing them twice has the same result as once.
-- **Anything that charges or creates** (`POST /vps`, `POST /apps`, `/order`, `/renew`, `/topup`) should **not** be retried blindly after a timeout. List your servers, apps or transactions first to see whether the first attempt went through.
+- **Anything that charges or creates** (`POST /vps`, `POST /apps`, `/order`, `/renew`) should **not** be retried blindly after a timeout. List your servers, apps or transactions first to see whether the first attempt went through.
