@@ -1,0 +1,96 @@
+---
+title: "Consoles and live streams"
+description: "Terminals, live app output, live metrics and collaborative editing over WebSockets and server-sent events."
+icon: "radio"
+---
+
+A few endpoints hold a connection open instead of answering once. They are not in the API reference, because a request-and-response playground cannot open them — they are documented here instead.
+
+All of them take your API key in the `Authorization` header, so they are for **server-side code** — a script, a bot, your own backend. Browsers cannot set that header on a WebSocket or an `EventSource`; the Storiza dashboard uses its own session for these.
+
+| Endpoint | Protocol | Permission | What it carries |
+| --- | --- | --- | --- |
+| `GET /apps/{id}/attach` | WebSocket | `apps:read` | The app's own console: its output, and its input if it reads one. |
+| `GET /apps/{id}/terminal` | WebSocket | `apps:read` | A shell inside the running container. |
+| `GET /apps/{id}/metrics/stream?window=hour` | Server-sent events | `apps:read` | The same data as `GET /apps/{id}/metrics`, pushed as it updates. |
+| `GET /apps/{id}/files/live?path=/index.js` | WebSocket ([Yjs](https://docs.yjs.dev)) | `apps:read` | One file, edited together with everyone else who has it open. |
+
+Use `wss://api.storiza.store` for WebSockets and `https://api.storiza.store` for the event stream.
+
+## Console output — `attach`
+
+Raw bytes in both directions: what the app prints arrives as it prints it, and what you send goes to its standard input. There is no framing and no control protocol — every message is data.
+
+```javascript
+import WebSocket from "ws";
+
+const socket = new WebSocket(`wss://api.storiza.store/apps/${APP_ID}/attach`, {
+  headers: { Authorization: `Bearer ${process.env.STORIZA_API_KEY}` },
+});
+
+socket.on("message", (chunk) => process.stdout.write(chunk));
+socket.on("open", () => socket.send("list\n")); // a console command, newline included
+```
+
+The console has no terminal attached, so nothing you send is echoed back — only the app's own reply. For a one-off command without holding a connection, use `POST /apps/{id}/stdin` and read `GET /apps/{id}/logs`.
+
+## Shell — `terminal`
+
+An interactive shell (the template's own — `bash` or `sh`) in the running container, on a terminal: it echoes what you type, so it behaves like SSH. Send keystrokes, receive the terminal's output. For a single command, `POST /apps/{id}/exec` is simpler.
+
+Both `attach` and `terminal` need the app to be running. On a stopped app the connection is refused with `409 APP_STOPPED` before it opens — read `GET /apps/{id}/logs` to see why an app stopped.
+
+## Live metrics
+
+```javascript
+const response = await fetch(
+  `https://api.storiza.store/apps/${APP_ID}/metrics/stream?window=hour`,
+  { headers: { Authorization: `Bearer ${process.env.STORIZA_API_KEY}` } },
+);
+
+const reader = response.body.pipeThrough(new TextDecoderStream()).getReader();
+for (;;) {
+  const { value, done } = await reader.read();
+  if (done) break;
+  process.stdout.write(value); // "event: metrics\ndata: {...}\n\n"
+}
+```
+
+A `metrics` event arrives straight away and then once per sample — every minute for `hour`, every five minutes for `day`. A value the node cannot measure is `null`, never `0`.
+
+## Collaborative editing — `files/live`
+
+Opens one text file for shared editing. Only changes travel — each keystroke is a few bytes — and simultaneous edits from several people merge without conflicts. It is what the dashboard's code editor uses.
+
+The protocol is the standard [y-websocket](https://github.com/yjs/y-websocket) one, so its `WebsocketProvider` connects unchanged:
+
+```javascript
+import * as Y from "yjs";
+import { WebsocketProvider } from "y-websocket";
+import WebSocket from "ws";
+
+class AuthedSocket extends WebSocket {
+  constructor(url) {
+    super(url, { headers: { Authorization: `Bearer ${process.env.STORIZA_API_KEY}` } });
+  }
+}
+
+const doc = new Y.Doc();
+const provider = new WebsocketProvider(
+  `wss://api.storiza.store/apps/${APP_ID}/files`,
+  "live",
+  doc,
+  { params: { path: "/index.js" }, WebSocketPolyfill: AuthedSocket },
+);
+
+provider.on("sync", () => console.log(doc.getText("content").toString()));
+```
+
+- The text is `Y.Text("content")`. `Y.Map("meta")` holds `dirty`, `savedAt` and `lastSave` for everyone.
+- Edits are held by Storiza until someone **saves**: a binary frame of type `100` — a var-uint `100`, a var-string request id, then one byte, `1` to overwrite a file that changed on disk since it was opened. The result appears in `meta.lastSave` with that request id.
+- Unsaved edits are kept for 30 minutes after the last person leaves, so a reconnect does not lose them.
+- The connection is closed for good with code `4404` if the file is deleted, `4410` if it is moved (open the new path) and `4413` if the document grows past 2 MB.
+
+<Tip>
+  To change a file from a script, `PUT /apps/{id}/files/content` is far simpler. Use the live channel when people may be editing the same file at the same time.
+</Tip>

@@ -1,0 +1,86 @@
+---
+title: "API keys"
+description: "Create a key, give it only the permissions it needs, and keep it safe."
+icon: "key-round"
+---
+
+Every API request is made with an **API key**. A key belongs to your account and acts as you, limited to the permissions you give it. You can have as many keys as you like — one per script or integration is a good habit, so you can revoke one without breaking the others.
+
+## Create a key
+
+<Steps>
+  <Step title="Open API & Integrations">
+    Sign in to [dashboard.storiza.store](https://dashboard.storiza.store) and open **API & Integrations** from the sidebar.
+  </Step>
+  <Step title="Choose Create key and fill in the details">
+    | Field | What it is |
+    | --- | --- |
+    | **Name** | So you recognise it later, e.g. `Deployment bot`. |
+    | **Description** | Optional. What the key is for. |
+    | **Transport** | **REST API only** for scripts using this API. **MCP server only** for AI agents. **REST API and MCP** for both. |
+    | **Expires on** | Optional. Leave empty for a key that never expires. |
+    | **Permissions** | What the key may do. At least one is required — see below. |
+    | **Allowed IP addresses** | Optional. Restrict which addresses may use the key. Empty means any address. |
+  </Step>
+  <Step title="Copy the key">
+    The key is shown **once**, right after you create it. It starts with `stz_`. Storiza stores only a fingerprint of it, so if you lose it, create a new one and revoke the old.
+  </Step>
+</Steps>
+
+## Use a key
+
+Send it in the `Authorization` header as a bearer token:
+
+```bash
+curl https://api.storiza.store/vps/ \
+  -H "Authorization: Bearer $STORIZA_API_KEY"
+```
+
+There is no separate login step and no token to refresh — the key itself is the credential, on every request.
+
+## Permissions
+
+A permission is `<area>:<action>`. **Read** lets a key look; **Manage** (`:write`) lets it change things too. Every endpoint in the [API reference](/api-reference/introduction) states the one it needs.
+
+| Area | Read (`:read`) | Manage (`:write`) |
+| --- | --- | --- |
+| **VPS** — `vps` | Servers, backups, snapshots, metrics, plans and templates. | Create, modify, power-cycle and delete servers and their backups. |
+| **Apps** — `apps` | Apps, their files, domains, metrics and backups. | Deploy, modify, power-cycle and delete apps, files, domains and backups. |
+| **Billing** — `billing` | Transactions, invoices, subscriptions, payment methods and currencies. | Create, pay and cancel transactions and subscriptions; redeem coupons and gift cards. |
+| **Account** — `account` | Profile, managed users and resource summaries. | Managed users and SSH keys. |
+| **Reseller** — `reseller` | Reseller status, store and sub-accounts. | Apply as a reseller, manage the store and sub-accounts. |
+| **Support** — `support` | Your tickets and their messages. | Open, reply to and close tickets. |
+
+<Tip>
+  Grant the least that works. A monitoring script needs `vps:read`, not `vps:write`. A key that can only read cannot delete a server, however it is misused.
+</Tip>
+
+Some things are deliberately **not** possible with a key, whatever its permissions: creating or changing API keys, changing your password, email or two-factor settings, and deleting your account. Those happen in the dashboard only, so a leaked key can never be used to lock you out or to create more keys.
+
+## Restrict by IP address
+
+If you know where a key will be used from — a server, a CI runner — list those addresses under **Allowed IP addresses**. Requests from anywhere else are refused even with the correct key. Single addresses and ranges both work, for IPv4 and IPv6 (for example `203.0.113.7` or `203.0.113.0/24`).
+
+## When a request is refused
+
+| Status | `code` | Meaning |
+| --- | --- | --- |
+| `401` | `AUTHENTICATION_ERROR` | No key was sent. |
+| `401` | `INVALID_API_KEY` | The key is malformed, unknown or revoked. |
+| `401` | `EXPIRED_API_KEY` | The key has passed its expiry date. Create a new one. |
+| `403` | `MISSING_PERMISSION` | The key is valid but lacks the permission this endpoint needs. |
+| `403` | `IP_NOT_ALLOWED` | The request came from an address the key does not allow. |
+| `403` | `TRANSPORT_NOT_ALLOWED` | The key cannot be used here — an **MCP only** key used against the REST API, or a dashboard-only endpoint. |
+| `403` | `ACCOUNT_SUSPENDED` / `ACCOUNT_BANNED` | The account the key belongs to cannot act. Contact support. |
+
+See [Responses and errors](/concepts/responses-and-errors) for the full error format.
+
+## Rotate and revoke
+
+Revoke a key from **API & Integrations** with **Revoke**. Anything using it stops working immediately, and it cannot be undone.
+
+To rotate a key without downtime: create the new key, deploy it, confirm it is being used (the list shows each key's **Last used** time), then revoke the old one.
+
+<Warning>
+  Treat a key like a password. Never commit it to a repository, paste it into a support ticket, or ship it in code that runs in a browser or a mobile app — anyone who can read it can act as you within its permissions.
+</Warning>

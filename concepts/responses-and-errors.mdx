@@ -1,0 +1,88 @@
+---
+title: "Responses and errors"
+description: "One envelope for every answer, and a stable code on every error."
+icon: "braces"
+---
+
+## Successful responses
+
+Every successful response has the same shape:
+
+```json
+{
+  "success": true,
+  "message": "VPS retrieved successfully",
+  "data": { "id": "3f1c…", "name": "web-1" }
+}
+```
+
+| Field | |
+| --- | --- |
+| `success` | Always `true` here. |
+| `message` | A human-readable summary. Do not parse it — it can change. |
+| `data` | The result: an object, or an array for list endpoints. |
+| `pagination` | Present on list endpoints only. See [Pagination and filtering](/concepts/pagination-and-filtering). |
+
+A few endpoints return a file rather than JSON — downloading an invoice, a backup or an app's file. Their pages say so.
+
+## Errors
+
+Every error has this shape, with a matching HTTP status:
+
+```json
+{
+  "success": false,
+  "type": "API",
+  "code": "NOT_FOUND",
+  "error": "VPS not found",
+  "details": null
+}
+```
+
+| Field | |
+| --- | --- |
+| `code` | A stable, machine-readable identifier. **Branch on this.** |
+| `error` | A human-readable explanation, safe to show to a person. |
+| `details` | Extra context when there is any — which field was wrong, which limit was hit. Often `null`. |
+
+Each endpoint page in the [API reference](/api-reference/introduction) lists the errors it can return, grouped by status.
+
+### Validation errors
+
+A request whose body, query or path parameters do not match what the endpoint expects is refused with `422 VALIDATION_ERROR`. `details` points at each field that failed:
+
+```json
+{
+  "success": false,
+  "type": "API",
+  "code": "VALIDATION_ERROR",
+  "error": "Validation error",
+  "details": {
+    "errors": [],
+    "properties": {
+      "duration": { "errors": ["Too small: expected number to be >=7"] }
+    }
+  }
+}
+```
+
+### Common codes
+
+| Status | `code` | What to do |
+| --- | --- | --- |
+| `400` | `MALFORMED_JSON` | The body is not valid JSON. Check the `Content-Type: application/json` header and the body. |
+| `400` `403` | *endpoint-specific* | The request is valid but cannot be done right now — for example `PLAN_OUT_OF_STOCK` or `SUBSCRIPTION_EXPIRED`. The `error` message explains. |
+| `401` | `AUTHENTICATION_ERROR`, `INVALID_API_KEY`, `EXPIRED_API_KEY` | See [API keys](/authentication#when-a-request-is-refused). |
+| `403` | `MISSING_PERMISSION`, `IP_NOT_ALLOWED` | The key cannot do this. See [API keys](/authentication#when-a-request-is-refused). |
+| `404` | `NOT_FOUND`, `APP_NOT_FOUND` | It does not exist — **or it is not yours**. Storiza answers the same for both, so ids of other people's resources cannot be discovered. |
+| `409` | `CONFLICT`, `APP_STOPPED`, … | The resource is not in a state that allows this — for example opening a terminal on a stopped app. |
+| `413` | `PAYLOAD_TOO_LARGE` | The body is too big. `details.limit` says the maximum. |
+| `422` | `VALIDATION_ERROR` | See above. |
+| `422` | `DUPLICATE_RESOURCE` | Something with that value already exists. `details.fields` says which. |
+| `500` | `INTERNAL_ERROR` | Something went wrong on our side. Retry later; if it persists, [contact support](/guides/support) with the time and the endpoint. |
+
+## Retrying safely
+
+- **Reads** (`GET`) are always safe to retry.
+- **Power actions and updates** (start, stop, restart, renaming, settings) can be retried — doing them twice has the same result as once.
+- **Anything that charges or creates** (`POST /vps`, `POST /apps`, `/order`, `/renew`, `/topup`) should **not** be retried blindly after a timeout. List your servers, apps or transactions first to see whether the first attempt went through.

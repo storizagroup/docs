@@ -1,0 +1,87 @@
+---
+title: "App files, logs and commands"
+description: "Read and write an app's files, read its output, and run commands inside it."
+icon: "folder-code"
+---
+
+## Files
+
+Every app has one volume, mounted as its working directory. The file API reads and writes it; paths are relative to the volume root and always start with `/`.
+
+| Task | Endpoint |
+| --- | --- |
+| List a folder | `GET /apps/{id}/files?path=/` |
+| Read a text file (as JSON) | `GET /apps/{id}/files/text?path=/server.properties` |
+| Download any file (raw bytes) | `GET /apps/{id}/files/content?path=/world.zip` |
+| Write a file | `PUT /apps/{id}/files/content` |
+| Create a folder | `POST /apps/{id}/files/mkdir` |
+| Move or rename | `POST /apps/{id}/files/move` |
+| Copy | `POST /apps/{id}/files/copy` |
+| Delete (a folder needs `recursive: true`) | `DELETE /apps/{id}/files` |
+
+### Reading text
+
+`/files/text` returns the content inside the usual JSON envelope, up to 512 KB per call. A longer file comes back with `truncated: true` — page through it with `offset`. A file that is not text is reported with `binary: true` and no content; download it from `/files/content` instead.
+
+### Writing
+
+Writes replace the **whole file** — there is no partial write. Send text as-is, and anything else base64-encoded:
+
+```bash
+curl -X PUT https://api.storiza.store/apps/APP_ID/files/content \
+  -H "Authorization: Bearer $STORIZA_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "path": "/config.json", "content": "{\"debug\": false}", "encoding": "utf8" }'
+```
+
+Changes to files your app reads at startup take effect when you restart it.
+
+<Note>
+  Database templates do not allow file access — their files are a live on-disk format that hand edits would corrupt. The file API answers `403 FILE_ACCESS_NOT_ALLOWED` for them; use backups to get the data out.
+</Note>
+
+## SFTP
+
+For moving many files, or using an editor or FTP client you already have, turn on SFTP:
+
+```bash
+curl -X POST https://api.storiza.store/apps/APP_ID/sftp/enable \
+  -H "Authorization: Bearer $STORIZA_API_KEY"
+```
+
+The response — and `GET /apps/{id}/sftp` afterwards — gives the `host`, `port`, `username` and `password`. Disabling SFTP revokes the password; enabling it again issues a new one, so update your client. `POST /apps/{id}/sftp/regenerate` issues a new password without turning SFTP off.
+
+## Output and logs
+
+```bash
+curl "https://api.storiza.store/apps/APP_ID/logs?tail=200" \
+  -H "Authorization: Bearer $STORIZA_API_KEY"
+```
+
+Returns the app's recent output as text: `tail` lines from the end (up to 5000), or everything after an ISO timestamp with `since`. It works on a stopped or crashed app too — which is usually when you need it most. To follow output live, see [Consoles and live streams](/guides/realtime).
+
+## Run a command
+
+`POST /apps/{id}/exec` runs a command inside the running container and returns its output and exit code. The command is a list of arguments, not a shell line — ask for a shell to use pipes or `&&`:
+
+```bash
+curl -X POST https://api.storiza.store/apps/APP_ID/exec \
+  -H "Authorization: Bearer $STORIZA_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "command": ["sh", "-lc", "ls -la && df -h ."], "timeoutMs": 30000 }'
+```
+
+Output is capped at 1 MB (`truncated: true` beyond that), and a command still running at `timeoutMs` (up to 2 minutes) comes back with `timedOut: true`. This runs alongside your app; it does not change how the app starts.
+
+## Send a console command
+
+Game servers and other apps that read commands from their console accept one line at a time:
+
+```bash
+curl -X POST https://api.storiza.store/apps/APP_ID/stdin \
+  -H "Authorization: Bearer $STORIZA_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "line": "say Server restarting in 5 minutes" }'
+```
+
+Templates that do not read their console refuse this. Read the result from the [logs](#output-and-logs).

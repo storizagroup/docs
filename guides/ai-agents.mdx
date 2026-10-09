@@ -1,0 +1,90 @@
+---
+title: "Connect an AI agent"
+description: "Let Claude, ChatGPT, Cursor or any MCP client look after your servers — with your approval for every change."
+icon: "sparkles"
+---
+
+Storiza runs an **MCP server** — the open standard AI assistants use to call tools. Connect one and you can ask it things like *"Which of my servers is using the most CPU?"*, *"Restart the Minecraft server"* or *"Why did my bot crash?"* and it answers using your real account.
+
+```text MCP server URL
+https://api.storiza.store/mcp
+```
+
+The URL is the same for everyone and contains nothing secret. The first time a client connects, it sends you to Storiza in your browser to sign in and approve it — there is no key to paste.
+
+## Set it up
+
+<Tabs>
+  <Tab title="Claude">
+    1. Open **Settings → Connectors** in Claude.
+    2. Choose **Add custom connector**.
+    3. Paste the server URL and confirm.
+    4. Claude sends you to Storiza to approve the connection. Review what it asks for and allow it.
+
+    The Storiza tools then appear in Claude's tool list.
+  </Tab>
+  <Tab title="Claude Code">
+    ```bash
+    claude mcp add --transport http storiza https://api.storiza.store/mcp
+    ```
+
+    Then start Claude Code and run `/mcp` to sign in to Storiza and approve the connection. Add `--scope user` to make it available in every project, not just the current one.
+  </Tab>
+  <Tab title="ChatGPT">
+    1. Open **Settings → Connectors** in ChatGPT.
+    2. Turn on **Developer mode** if it is not already — custom connectors live behind it.
+    3. Choose **Create** / **Add custom connector** and paste the server URL.
+    4. Approve the connection when Storiza asks.
+
+    Custom connectors are not available on every ChatGPT plan.
+  </Tab>
+  <Tab title="Cursor">
+    Add to `~/.cursor/mcp.json`, or `.cursor/mcp.json` inside a project:
+
+    ```json
+    {
+      "mcpServers": {
+        "storiza": { "url": "https://api.storiza.store/mcp" }
+      }
+    }
+    ```
+  </Tab>
+  <Tab title="VS Code">
+    Add to `.vscode/mcp.json` in your workspace:
+
+    ```json
+    {
+      "servers": {
+        "storiza": { "type": "http", "url": "https://api.storiza.store/mcp" }
+      }
+    }
+    ```
+  </Tab>
+  <Tab title="Any MCP client">
+    Storiza speaks MCP over **streamable HTTP** and authenticates with **OAuth 2.0**, so any client that supports both can connect:
+
+    ```json
+    {
+      "mcpServers": {
+        "storiza": { "type": "http", "url": "https://api.storiza.store/mcp" }
+      }
+    }
+    ```
+
+    Where that configuration goes, and what each client calls the transport, differs between clients.
+  </Tab>
+</Tabs>
+
+## What it can do
+
+The agent gets the same abilities as the [API](/api-reference/introduction): list and inspect your servers and apps, read metrics and logs, power them on and off, manage files, backups, firewall rules, subscriptions and support tickets.
+
+**Anything that changes something waits for your approval** — the agent proposes the action and you confirm it. Reading is not held up.
+
+## Revoke access
+
+Every connected client is listed under **API & Integrations → Connected applications** in the dashboard. Revoke one there and it loses access immediately.
+
+<Note>
+  Prefer a key over sign-in? Create an API key with transport **MCP server only** (or **REST API and MCP**) — see [API keys](/authentication) — for clients that authenticate with a bearer token instead of OAuth.
+</Note>

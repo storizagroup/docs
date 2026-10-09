@@ -1,0 +1,51 @@
+---
+title: "API overview"
+description: "Base URL, authentication and conventions shared by every endpoint."
+icon: "square-terminal"
+---
+
+The Storiza API is a JSON REST API. Everything in this reference can be called with an [API key](/authentication); the catalog endpoints (plans, templates, datacenters, currencies) need no key at all.
+
+```text Base URL
+https://api.storiza.store
+```
+
+## Authenticate
+
+Send your key as a bearer token on every request:
+
+```bash
+curl https://api.storiza.store/profile/information \
+  -H "Authorization: Bearer $STORIZA_API_KEY"
+```
+
+Each endpoint page lists the **permission** the key needs, such as `vps:read` or `apps:write`. Reading needs `:read`; anything that changes something needs `:write`. See [Permissions](/authentication#permissions).
+
+## Try it here
+
+Every endpoint page has a playground. Paste your key into the **Authorization** field, fill in the parameters and press **Send** — the request goes to the live API with your key, so it acts on your real account.
+
+<Warning>
+  Requests sent from the playground are real. Creating, deleting or paying for something here does exactly that.
+</Warning>
+
+## Conventions
+
+<CardGroup cols={2}>
+  <Card title="Responses and errors" icon="braces" href="/concepts/responses-and-errors">
+    Every answer has the same envelope; every error has a stable `code`.
+  </Card>
+  <Card title="Pagination and filtering" icon="list-filter" href="/concepts/pagination-and-filtering">
+    `_page`, `_limit`, `_search`, `_sort_by` on every list endpoint.
+  </Card>
+  <Card title="Billing and payments" icon="credit-card" href="/concepts/billing-and-payments">
+    Paying from your balance versus ordering through a checkout.
+  </Card>
+  <Card title="Consoles and live streams" icon="radio" href="/guides/realtime">
+    Terminals, app output and live editing over WebSockets.
+  </Card>
+</CardGroup>
+
+## IDs
+
+Resources are identified by UUIDs, such as `0234c235-ee24-40ce-a8bc-b0f944484a6a`. Some paths call a server's id `vmId`, `vpsId` or `id` — they are all the same server id.

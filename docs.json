@@ -1,0 +1,413 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "Storiza Docs",
+  "description": "Guides and API reference for Storiza: VPS servers, game servers, databases and bots.",
+  "colors": {
+    "primary": "#2563eb",
+    "light": "#60a5fa",
+    "dark": "#173da6"
+  },
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg",
+    "href": "https://storiza.store"
+  },
+  "favicon": "/favicon.svg",
+  "appearance": {
+    "default": "dark"
+  },
+  "icons": {
+    "library": "lucide"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Support",
+        "href": "mailto:support@storiza.store"
+      },
+      {
+        "label": "Website",
+        "href": "https://storiza.store"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Dashboard",
+      "href": "https://dashboard.storiza.store"
+    }
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Guides",
+        "icon": "book-open",
+        "groups": [
+          {
+            "group": "Get started",
+            "pages": [
+              "index",
+              "quickstart",
+              "authentication"
+            ]
+          },
+          {
+            "group": "Using the API",
+            "pages": [
+              "concepts/responses-and-errors",
+              "concepts/pagination-and-filtering",
+              "concepts/billing-and-payments"
+            ]
+          },
+          {
+            "group": "Servers & apps",
+            "pages": [
+              "guides/deploy-a-vps",
+              "guides/deploy-an-app",
+              "guides/app-files-and-console",
+              "guides/realtime"
+            ]
+          },
+          {
+            "group": "More",
+            "pages": [
+              "guides/ai-agents",
+              "guides/support"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "icon": "square-terminal",
+        "openapi": "openapi.json",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "api-reference/introduction"
+            ]
+          },
+          {
+            "group": "Servers",
+            "pages": [
+              "GET /vps/",
+              "POST /vps/",
+              "POST /vps/{id}/renew",
+              "POST /vps/{id}/upgrade",
+              "GET /vps/{vmId}",
+              "PUT /vps/{vmId}",
+              "DELETE /vps/{vmId}",
+              "POST /vps/order"
+            ]
+          },
+          {
+            "group": "Server power & commands",
+            "pages": [
+              "POST /vps/{vmId}/execute",
+              "POST /vps/{vmId}/kill",
+              "POST /vps/{vmId}/reboot",
+              "POST /vps/{vmId}/start",
+              "GET /vps/{vmId}/status",
+              "POST /vps/{vmId}/stop"
+            ]
+          },
+          {
+            "group": "Server settings",
+            "pages": [
+              "PUT /vps/{vmId}/info",
+              "GET /vps/{vmId}/provision",
+              "POST /vps/{vmId}/reinstall"
+            ]
+          },
+          {
+            "group": "Server firewall",
+            "pages": [
+              "GET /vps/{vmId}/firewall",
+              "PUT /vps/{vmId}/firewall/options",
+              "POST /vps/{vmId}/firewall/rules",
+              "PUT /vps/{vmId}/firewall/rules/{ruleId}",
+              "DELETE /vps/{vmId}/firewall/rules/{ruleId}",
+              "POST /vps/{vmId}/firewall/template",
+              "PUT /vps/{vmId}/firewall/toggle",
+              "GET /vps/firewall/presets"
+            ]
+          },
+          {
+            "group": "Server metrics",
+            "pages": [
+              "GET /vps/{vmId}/metrics/alerts",
+              "GET /vps/{vmId}/metrics/current",
+              "GET /vps/{vmId}/metrics/historical",
+              "GET /vps/{vmId}/metrics/overview",
+              "GET /vps/{vmId}/metrics/summary"
+            ]
+          },
+          {
+            "group": "Server backups",
+            "pages": [
+              "POST /vps/{id}/backups/order",
+              "GET /vps/{vpsId}/backups",
+              "POST /vps/{vpsId}/backups",
+              "GET /vps/{vpsId}/backups/{backupId}",
+              "DELETE /vps/{vpsId}/backups/{backupId}",
+              "POST /vps/{vpsId}/backups/{backupId}/check-status"
+            ]
+          },
+          {
+            "group": "Server snapshots",
+            "pages": [
+              "GET /vps/{vpsId}/snapshots",
+              "POST /vps/{vpsId}/snapshots",
+              "GET /vps/{vpsId}/snapshots/{snapshotId}",
+              "DELETE /vps/{vpsId}/snapshots/{snapshotId}"
+            ]
+          },
+          {
+            "group": "Server sharing",
+            "pages": [
+              "GET /vps/{vmId}/share",
+              "POST /vps/{vmId}/share/generate",
+              "GET /vps/{vpsId}/members",
+              "POST /vps/{vpsId}/members",
+              "DELETE /vps/{vpsId}/members/{userId}",
+              "POST /vps/validate"
+            ]
+          },
+          {
+            "group": "Server catalog",
+            "pages": [
+              "GET /vps-backup-plans/",
+              "GET /vps-backup-plans/{id}",
+              "GET /vps-categories/",
+              "GET /vps-datacenters/",
+              "GET /vps-datacenters/{datacenterId}/",
+              "GET /vps-plans/{id}",
+              "GET /vps-plans/public",
+              "GET /vps-templates/"
+            ]
+          },
+          {
+            "group": "Apps",
+            "pages": [
+              "GET /apps/",
+              "POST /apps/",
+              "GET /apps/{id}",
+              "PATCH /apps/{id}",
+              "DELETE /apps/{id}",
+              "PATCH /apps/{id}/command",
+              "POST /apps/{id}/command/preview",
+              "PATCH /apps/{id}/environment",
+              "POST /apps/{id}/reinstall",
+              "POST /apps/{id}/renew",
+              "POST /apps/order"
+            ]
+          },
+          {
+            "group": "App lifecycle & console",
+            "pages": [
+              "POST /apps/{id}/exec",
+              "POST /apps/{id}/lifecycle/kill",
+              "POST /apps/{id}/lifecycle/restart",
+              "POST /apps/{id}/lifecycle/start",
+              "POST /apps/{id}/lifecycle/stop",
+              "GET /apps/{id}/logs",
+              "GET /apps/{id}/metrics",
+              "POST /apps/{id}/stdin"
+            ]
+          },
+          {
+            "group": "App files",
+            "pages": [
+              "GET /apps/{id}/files",
+              "DELETE /apps/{id}/files",
+              "GET /apps/{id}/files/content",
+              "PUT /apps/{id}/files/content",
+              "POST /apps/{id}/files/copy",
+              "POST /apps/{id}/files/mkdir",
+              "POST /apps/{id}/files/move",
+              "GET /apps/{id}/files/text",
+              "GET /apps/{id}/sftp",
+              "POST /apps/{id}/sftp/disable",
+              "POST /apps/{id}/sftp/enable",
+              "POST /apps/{id}/sftp/regenerate"
+            ]
+          },
+          {
+            "group": "App backups",
+            "pages": [
+              "GET /apps/{id}/backups",
+              "POST /apps/{id}/backups",
+              "DELETE /apps/{id}/backups/{backupId}",
+              "GET /apps/{id}/backups/{backupId}/download",
+              "GET /apps/{id}/restores",
+              "POST /apps/{id}/restores"
+            ]
+          },
+          {
+            "group": "App domains & ports",
+            "pages": [
+              "GET /apps/{id}/exposures",
+              "POST /apps/{id}/exposures",
+              "PATCH /apps/{id}/exposures/{exposureId}",
+              "DELETE /apps/{id}/exposures/{exposureId}",
+              "POST /apps/{id}/exposures/{exposureId}/verify"
+            ]
+          },
+          {
+            "group": "App groups",
+            "pages": [
+              "GET /apps-groups/",
+              "POST /apps-groups/",
+              "GET /apps-groups/{groupId}",
+              "PATCH /apps-groups/{groupId}",
+              "DELETE /apps-groups/{groupId}",
+              "GET /apps-groups/{groupId}/apps",
+              "GET /apps/{id}/group",
+              "PUT /apps/{id}/group"
+            ]
+          },
+          {
+            "group": "App catalog",
+            "pages": [
+              "GET /apps-nodes/",
+              "GET /apps-nodes/{id}",
+              "GET /apps-nodes/{id}/capacity",
+              "GET /apps-nodes/{id}/health",
+              "GET /apps-plans/",
+              "GET /apps-templates/"
+            ]
+          },
+          {
+            "group": "Subscriptions",
+            "pages": [
+              "GET /payments/subscriptions",
+              "GET /payments/subscriptions/{id}",
+              "POST /payments/subscriptions/{id}",
+              "DELETE /payments/subscriptions/{id}",
+              "GET /payments/subscriptions/{id}/manage",
+              "POST /payments/subscriptions/{id}/payment-method",
+              "PATCH /payments/subscriptions/{id}/period"
+            ]
+          },
+          {
+            "group": "Transactions & invoices",
+            "pages": [
+              "GET /payments/transactions",
+              "GET /payments/transactions/{id}",
+              "POST /payments/transactions/{id}",
+              "DELETE /payments/transactions/{id}",
+              "GET /payments/transactions/{id}/invoice",
+              "GET /payments/transactions/{id}/status"
+            ]
+          },
+          {
+            "group": "Billing",
+            "pages": [
+              "POST /payments/coupons/{code}",
+              "GET /payments/currencies",
+              "GET /payments/methods",
+              "POST /payments/topup"
+            ]
+          },
+          {
+            "group": "Gift cards",
+            "pages": [
+              "GET /payments/giftcards",
+              "GET /payments/giftcards/{code}",
+              "POST /payments/giftcards/{id}/regenerate",
+              "POST /payments/giftcards/buy",
+              "POST /payments/giftcards/redeem",
+              "GET /payments/giftcards/values"
+            ]
+          },
+          {
+            "group": "Account",
+            "pages": [
+              "GET /profile/information",
+              "GET /resources/search",
+              "GET /resources/summary",
+              "GET /resources/top"
+            ]
+          },
+          {
+            "group": "SSH keys",
+            "pages": [
+              "GET /sshkeys/",
+              "POST /sshkeys/",
+              "GET /sshkeys/{id}",
+              "PATCH /sshkeys/{id}",
+              "DELETE /sshkeys/{id}"
+            ]
+          },
+          {
+            "group": "Managed users",
+            "pages": [
+              "GET /managed-users/",
+              "POST /managed-users/",
+              "DELETE /managed-users/{userId}",
+              "PATCH /managed-users/{userId}/password",
+              "PATCH /managed-users/{userId}/vps-access",
+              "POST /managed-users/{vpsId}/members",
+              "DELETE /managed-users/{vpsId}/members/{userId}"
+            ]
+          },
+          {
+            "group": "Support",
+            "pages": [
+              "GET /support/tickets",
+              "POST /support/tickets",
+              "GET /support/tickets/{id}",
+              "POST /support/tickets/{id}/close",
+              "GET /support/tickets/{id}/messages",
+              "POST /support/tickets/{id}/messages",
+              "GET /support/unread"
+            ]
+          },
+          {
+            "group": "Reseller",
+            "pages": [
+              "GET /reseller-accounts/",
+              "POST /reseller-accounts/",
+              "DELETE /reseller-accounts/{accountId}",
+              "PATCH /reseller-accounts/{accountId}/password",
+              "PUT /reseller-accounts/{accountId}/vps",
+              "POST /reseller/apply",
+              "GET /reseller/status",
+              "GET /reseller/store",
+              "POST /reseller/store",
+              "PATCH /reseller/store",
+              "GET /reseller/store/domain-status",
+              "POST /reseller/store/icon"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "api": {
+    "playground": {
+      "display": "interactive"
+    },
+    "examples": {
+      "languages": [
+        "curl",
+        "javascript",
+        "python"
+      ]
+    }
+  },
+  "contextual": {
+    "options": [
+      "copy",
+      "view",
+      "chatgpt",
+      "claude"
+    ]
+  },
+  "footer": {
+    "socials": {
+      "website": "https://storiza.store"
+    }
+  }
+}

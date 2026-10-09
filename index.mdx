@@ -1,0 +1,55 @@
+---
+title: "What is Storiza?"
+description: "Cloud servers, game servers, databases and bots — run from one dashboard, one API and one balance."
+icon: "house"
+---
+
+Storiza is a hosting platform. You rent **virtual private servers (VPS)** with full root or administrator access, or deploy ready-made **apps** — game servers, databases and bots — without managing a machine yourself. Everything is paid from one account and can be controlled three ways:
+
+- **The dashboard** at [dashboard.storiza.store](https://dashboard.storiza.store), for clicking.
+- **The REST API** documented here, for scripts, integrations and your own panels.
+- **AI agents** such as Claude or ChatGPT, through Storiza's MCP server.
+
+All three act on the same account and see the same resources: a server you create with the API shows up in the dashboard, and the reverse.
+
+## What you can run
+
+<CardGroup cols={2}>
+  <Card title="VPS servers" icon="server" href="/guides/deploy-a-vps">
+    Linux or Windows virtual machines in several regions. Root access, your own IP, backups, snapshots and a firewall.
+  </Card>
+  <Card title="Game servers" icon="gamepad-2" href="/guides/deploy-an-app">
+    Minecraft and other games from a template. Pick a version, set a few options, share the address with your players.
+  </Card>
+  <Card title="Databases" icon="database" href="/guides/deploy-an-app">
+    PostgreSQL, MySQL, Redis and more — for your other apps to connect to.
+  </Card>
+  <Card title="Bots" icon="bot" href="/guides/deploy-an-app">
+    Node.js, Python and other runtimes for Discord and Telegram bots that keep running without a machine of your own.
+  </Card>
+</CardGroup>
+
+## How billing works
+
+Your account has a **balance**. Every server and app is attached to a **subscription** that renews from that balance — weekly, every two weeks, monthly or every three months, whichever you chose. You can top the balance up with any payment method shown in the dashboard, or pay for one order directly at checkout. See [Billing and payments](/concepts/billing-and-payments).
+
+## Using the API
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Make your first API call in a few minutes.
+  </Card>
+  <Card title="Get an API key" icon="key-round" href="/authentication">
+    Create a key, choose what it may do, and keep it safe.
+  </Card>
+  <Card title="API reference" icon="square-terminal" href="/api-reference/introduction">
+    Every endpoint you can call, with a live playground.
+  </Card>
+  <Card title="Connect an AI agent" icon="sparkles" href="/guides/ai-agents">
+    Let Claude or ChatGPT manage your servers, with your approval.
+  </Card>
+</CardGroup>
+
+<Note>
+  The base URL for every request is `https://api.storiza.store`. Requests and responses are JSON.
+</Note>

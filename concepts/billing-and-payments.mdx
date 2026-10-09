@@ -1,0 +1,91 @@
+---
+title: "Billing and payments"
+description: "Balance, subscriptions, orders and checkouts — how money moves when you use the API."
+icon: "credit-card"
+---
+
+## The pieces
+
+<CardGroup cols={2}>
+  <Card title="Balance" icon="wallet">
+    Money held on your account. Renewals are taken from it, and creating a server or app with the API can be paid from it directly.
+  </Card>
+  <Card title="Subscription" icon="repeat">
+    Attached to every server, app and backup add-on. Says how often it renews — 7, 14, 30 or 90 days — what it costs, and until when it is paid.
+  </Card>
+  <Card title="Transaction" icon="receipt">
+    One payment: a top-up, a purchase or a renewal. Has a status and, once paid, an invoice.
+  </Card>
+  <Card title="Payment method" icon="credit-card">
+    How a transaction is paid — balance, card, cryptocurrency and others. `GET /payments/methods` lists the ones you can use.
+  </Card>
+</CardGroup>
+
+## Two ways to pay for something new
+
+Servers and apps can each be created two ways. The request body is the same; only the payment differs.
+
+| | Pay from balance | Order through a checkout |
+| --- | --- | --- |
+| Endpoint | `POST /vps/` · `POST /apps/` | `POST /vps/order` · `POST /apps/order` |
+| You send | the configuration | the configuration **plus** `method` (and optionally `currency`, `couponCode`) |
+| What happens | Charged from your balance and built **straight away**. | A **transaction** is created and **nothing is built yet**. |
+| You get back | The new server or app. | The transaction, with `checkoutUrl` to pay at. |
+| When it exists | Now. | Once the payment completes — `provisionId` on the transaction is then the new server's or app's id. |
+
+Paying from balance is the simplest for automation: top your balance up once, then create without any checkout. If the balance is too low, the request is refused and nothing is charged.
+
+### Following an order
+
+```bash
+# 1. Order — returns a transaction with checkoutUrl
+curl -X POST https://api.storiza.store/vps/order \
+  -H "Authorization: Bearer $STORIZA_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "name": "web-1", "planId": "…", "datacenterId": "…", "templateId": "…", "duration": 30, "method": "…" }'
+
+# 2. Open checkoutUrl and pay. Then poll the status:
+curl https://api.storiza.store/payments/transactions/TRANSACTION_ID/status \
+  -H "Authorization: Bearer $STORIZA_API_KEY"
+```
+
+`/status` is built for polling every few seconds. When the transaction is `completed`, read it with `GET /payments/transactions/{id}` — `provisionId` is the id of what was created. A transaction left unpaid can be cancelled with `DELETE /payments/transactions/{id}`; nothing is built and nothing is charged.
+
+Transaction statuses: `pending` → `processing` → `completed`, or `failed`, `cancelled`, `refunded`.
+
+## Topping up your balance
+
+```bash
+curl -X POST https://api.storiza.store/payments/topup \
+  -H "Authorization: Bearer $STORIZA_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "amount": 25, "method": "…", "currency": "USD" }'
+```
+
+This returns a transaction to pay, exactly like an order. The balance is credited when it completes. Gift cards are redeemed with `POST /payments/giftcards/redeem` instead.
+
+## Currencies
+
+Prices are in US dollars. You can pay in another currency where the method supports it; `GET /payments/currencies` lists them with their rates. Some methods only settle in one currency — the order is converted for you, and the transaction's `currency` and `conversionRate` say what was actually charged.
+
+## Subscriptions
+
+| You want to | Call |
+| --- | --- |
+| See what renews and when | `GET /payments/subscriptions` |
+| Renew now, without waiting | `POST /vps/{id}/renew` · `POST /apps/{id}/renew` |
+| Change how often it renews (e.g. weekly → monthly) | `PATCH /payments/subscriptions/{id}/period` |
+| Stop it renewing | `DELETE /payments/subscriptions/{id}` |
+| Undo that, while the paid period is still running | `POST /payments/subscriptions/{id}` |
+| Move a server to a bigger plan | `POST /vps/{id}/upgrade` |
+
+A few rules worth knowing:
+
+- **Cancelling never cuts you off early.** The server or app keeps running until the end of the period already paid for, then stops renewing.
+- **Changing the period** applies from the next renewal. Nothing is charged or refunded now. Shorter periods carry a small surcharge over the monthly price.
+- **Upgrading** charges only the price difference for the days left in the current period, and keeps the renewal date. Send `"dryRun": true` first to see the exact amount without paying. Downgrades are not possible.
+- Some subscriptions are billed by an external payment provider on its own schedule (`supportsManagement: true`). Those are managed in the provider's portal — `GET /payments/subscriptions/{id}/manage` returns the link.
+
+## When a subscription runs out
+
+If a renewal cannot be paid, the subscription moves to `past_due` and then `expired`. An expired server or app stops and can no longer be started; renewing it brings it back. Keep your balance topped up — or renew ahead of time — to avoid interruptions.

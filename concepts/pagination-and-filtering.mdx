@@ -1,0 +1,67 @@
+---
+title: "Pagination and filtering"
+description: "Page through lists, search them, sort them and filter them."
+icon: "list-filter"
+---
+
+List endpoints — your servers, apps, transactions, subscriptions, tickets and the rest — share the same query parameters.
+
+| Parameter | Default | |
+| --- | --- | --- |
+| `_page` | `1` | Which page, starting at 1. |
+| `_limit` | `10` | Items per page, up to `250`. |
+| `_search` | — | Free-text search across the fields that endpoint searches (names, hostnames, …). |
+| `_sort_by` | endpoint default | Comma-separated fields. Prefix with `-` for descending: `_sort_by=-createdAt,name`. |
+| *any field* | — | Exact-match filter on a field the endpoint allows, such as `status=active`. |
+
+```bash
+curl "https://api.storiza.store/payments/transactions?_page=2&_limit=50&_sort_by=-createdAt&status=completed" \
+  -H "Authorization: Bearer $STORIZA_API_KEY"
+```
+
+Fields an endpoint does not allow for sorting or filtering are ignored rather than rejected, so check the endpoint's page for the parameters it lists.
+
+## The pagination object
+
+List responses carry a `pagination` object next to `data`:
+
+```json
+{
+  "success": true,
+  "message": "Transactions retrieved successfully",
+  "data": [ /* up to _limit items */ ],
+  "pagination": {
+    "page": 2,
+    "limit": 50,
+    "offset": 50,
+    "total": 137,
+    "totalPages": 3
+  }
+}
+```
+
+The same numbers are also sent as response headers — `X-Pagination-Page`, `X-Pagination-Limit`, `X-Pagination-Offset`, `X-Pagination-Total` and `X-Pagination-Total-Pages`.
+
+## Fetching everything
+
+Request pages until `page` reaches `totalPages`:
+
+```javascript
+async function listAll(path) {
+  const items = [];
+  for (let page = 1; ; page++) {
+    const url = `https://api.storiza.store${path}?_limit=250&_page=${page}`;
+    const res = await fetch(url, { headers: { Authorization: `Bearer ${process.env.STORIZA_API_KEY}` } });
+    const body = await res.json();
+    if (!body.success) throw new Error(`${body.code}: ${body.error}`);
+    items.push(...body.data);
+    if (page >= body.pagination.totalPages) return items;
+  }
+}
+
+const servers = await listAll("/vps/");
+```
+
+<Note>
+  The catalog endpoints — app templates and app plans in particular — return the whole catalog in one response without pagination, because it is small and meant to be filtered on your side.
+</Note>

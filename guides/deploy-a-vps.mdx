@@ -1,0 +1,112 @@
+---
+title: "Deploy a VPS"
+description: "Choose a plan, a region and an operating system, create the server, and manage it."
+icon: "server"
+---
+
+A VPS is a virtual machine with its own IP address and full root (Linux) or administrator (Windows) access. Creating one takes four choices: a **plan**, a **datacenter**, an **operating system**, and how you will **log in**.
+
+<Info>
+  The catalog endpoints in steps 1–3 are public — they work without an API key, so you can also use them to build a pricing page.
+</Info>
+
+<Steps>
+  <Step title="Choose a plan">
+    Plans are grouped into **categories** (for example Basic and Advanced). Each category runs in its own set of datacenters.
+
+    ```bash
+    curl https://api.storiza.store/vps-categories/
+    curl "https://api.storiza.store/vps-plans/public?category=basic"
+    ```
+
+    A plan lists its CPU, RAM, storage and network limits and its monthly `price`. Skip plans with `outOfStock: true` — they cannot be ordered right now. Existing servers on them keep working and can still renew.
+  </Step>
+  <Step title="Choose a datacenter">
+    ```bash
+    curl https://api.storiza.store/vps-datacenters/
+    ```
+
+    Pick one whose `name` is in the plan's category `supportedDatacenters`. Ordering a plan in a datacenter its category does not support is refused.
+  </Step>
+  <Step title="Choose an operating system">
+    ```bash
+    curl https://api.storiza.store/vps-templates/
+    ```
+
+    A template is an operating system or a ready-made image — Ubuntu, Debian, Windows Server and others. Note its `id`, its `platform` (`linux`, `windows` or `windows-server`), and:
+
+    - **`versions`** — if it offers several (Ubuntu 22.04 and 24.04, say), send the one you want as `templateImageSlug`. Leave it out for the default.
+    - **`inputs`** — any extra settings the template asks for. Send them as `inputs`.
+  </Step>
+  <Step title="Decide how you will log in">
+    Send a `vmPassword`, an `sshKeyId`, or both:
+
+    - **Password** — 8 to 64 characters with at least one uppercase letter, one lowercase letter, one number and one symbol.
+    - **SSH key** — upload your public key once with `POST /sshkeys/`, then pass its `id`. Linux only.
+
+    <Warning>
+      Windows servers need a password and do not accept SSH keys.
+    </Warning>
+  </Step>
+  <Step title="Create the server">
+    Pay from your balance and build it straight away:
+
+    ```bash
+    curl -X POST https://api.storiza.store/vps/ \
+      -H "Authorization: Bearer $STORIZA_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "name": "web-1",
+        "planId": "PLAN_ID",
+        "datacenterId": "DATACENTER_ID",
+        "templateId": "TEMPLATE_ID",
+        "duration": 30,
+        "sshKeyId": "SSH_KEY_ID"
+      }'
+    ```
+
+    `duration` is the billing period in days: `7`, `14`, `30` or `90`. To pay at a checkout instead of from your balance, send the same body to `POST /vps/order` with a `method` — see [Billing and payments](/concepts/billing-and-payments).
+  </Step>
+  <Step title="Wait for it to be ready">
+    The server is installed in the background, usually within a few minutes. Poll it until it is active:
+
+    ```bash
+    curl https://api.storiza.store/vps/VPS_ID \
+      -H "Authorization: Bearer $STORIZA_API_KEY"
+    ```
+
+    The response includes the server's IP address. Templates that install software after boot also report progress through `GET /vps/{vmId}/provision`.
+  </Step>
+</Steps>
+
+## Managing the server
+
+| Task | Endpoint |
+| --- | --- |
+| Start, stop, reboot, force-stop | `POST /vps/{vmId}/start` · `/stop` · `/reboot` · `/kill` |
+| Live CPU, memory, disk and network | `GET /vps/{vmId}/status` · `GET /vps/{vmId}/metrics/current` |
+| Usage over time | `GET /vps/{vmId}/metrics/historical` |
+| Run a command without SSH | `POST /vps/{vmId}/execute` |
+| Firewall rules and presets | `/vps/{vmId}/firewall/…` |
+| Snapshots | `POST /vps/{vpsId}/snapshots` |
+| Backups (add-on) | `POST /vps/{id}/backups/order`, then `POST /vps/{vpsId}/backups` |
+| Reinstall the operating system | `POST /vps/{vmId}/reinstall` — **erases the disk** |
+| Bigger plan | `POST /vps/{id}/upgrade` (try `"dryRun": true` first) |
+| Renew now | `POST /vps/{id}/renew` |
+| Give someone else access | `POST /vps/{vpsId}/members`, or a managed user with `/managed-users/` |
+| Delete | `DELETE /vps/{vmId}` — **permanent** |
+
+### Running a command
+
+`POST /vps/{vmId}/execute` runs a command inside the server through the guest agent and returns its output — useful for automation without managing SSH keys. On Linux the command runs in `sh`; on Windows it runs in PowerShell as SYSTEM.
+
+```bash
+curl -X POST https://api.storiza.store/vps/VPS_ID/execute \
+  -H "Authorization: Bearer $STORIZA_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "command": "uptime" }'
+```
+
+<Note>
+  Windows Server 2025 is based on Windows 11 and is not fully supported yet. We recommend Windows Server 2022 unless you specifically need 2025.
+</Note>

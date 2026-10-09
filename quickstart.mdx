@@ -1,0 +1,86 @@
+---
+title: "Quickstart"
+description: "From a new account to your first API call in five minutes."
+icon: "rocket"
+---
+
+<Steps>
+  <Step title="Create an account">
+    Sign up at [dashboard.storiza.store](https://dashboard.storiza.store) and verify your email address.
+  </Step>
+  <Step title="Create an API key">
+    In the dashboard, open **API & Integrations** and choose **Create key**. Give it a name, tick the permissions it needs — **Read Account** and **Read VPS** are enough for this guide — and create it.
+
+    Copy the key straight away. It starts with `stz_` and is shown **only once**; Storiza keeps only a fingerprint of it. [More about keys](/authentication).
+  </Step>
+  <Step title="Keep the key out of your code">
+    Put it in an environment variable rather than pasting it into scripts:
+
+    ```bash
+    export STORIZA_API_KEY="stz_..."
+    ```
+  </Step>
+  <Step title="Make your first request">
+    Ask who you are:
+
+    <CodeGroup>
+    ```bash curl
+    curl https://api.storiza.store/profile/information \
+      -H "Authorization: Bearer $STORIZA_API_KEY"
+    ```
+
+    ```javascript JavaScript
+    const response = await fetch("https://api.storiza.store/profile/information", {
+      headers: { Authorization: `Bearer ${process.env.STORIZA_API_KEY}` },
+    });
+    const { data } = await response.json();
+    console.log(data.username, data.balance);
+    ```
+
+    ```python Python
+    import os, requests
+
+    response = requests.get(
+        "https://api.storiza.store/profile/information",
+        headers={"Authorization": f"Bearer {os.environ['STORIZA_API_KEY']}"},
+    )
+    print(response.json()["data"])
+    ```
+    </CodeGroup>
+
+    Every answer is wrapped the same way:
+
+    ```json
+    {
+      "success": true,
+      "message": "Profile information retrieved successfully",
+      "data": { "username": "you", "email": "you@example.com", "balance": "25.00" }
+    }
+    ```
+  </Step>
+  <Step title="List your servers">
+    ```bash
+    curl "https://api.storiza.store/vps/?_limit=10" \
+      -H "Authorization: Bearer $STORIZA_API_KEY"
+    ```
+
+    `data` is an array of your servers and `pagination` says how many there are in total. See [Pagination and filtering](/concepts/pagination-and-filtering).
+  </Step>
+</Steps>
+
+## What next
+
+<CardGroup cols={2}>
+  <Card title="Deploy a VPS" icon="server" href="/guides/deploy-a-vps">
+    Pick a plan, a region and an operating system, and create a server.
+  </Card>
+  <Card title="Deploy an app" icon="gamepad-2" href="/guides/deploy-an-app">
+    Start a game server, a database or a bot from a template.
+  </Card>
+  <Card title="Handle errors" icon="triangle-alert" href="/concepts/responses-and-errors">
+    What an error looks like and which codes to expect.
+  </Card>
+  <Card title="Browse the reference" icon="square-terminal" href="/api-reference/introduction">
+    Every endpoint, with a playground to try it.
+  </Card>
+</CardGroup>

@@ -1,0 +1,113 @@
+---
+title: "Deploy an app"
+description: "Run a game server, a database or a bot from a template — no machine to manage."
+icon: "gamepad-2"
+---
+
+An **app** is a container Storiza runs for you from a **template**: a Minecraft server, a PostgreSQL database, a Node.js bot. You choose the template and a plan; Storiza handles the machine, the networking and the address.
+
+Every app has **one volume** — its files, which survive stops, restarts and reinstalls — and is reached through its **endpoints**: a domain for web traffic, or an address and port for games and databases.
+
+<Steps>
+  <Step title="Choose a template">
+    ```bash
+    curl "https://api.storiza.store/apps-templates/?type=game_server"
+    ```
+
+    `type` is `game_server`, `database` or `bot`. A template lists its **versions** (Minecraft 1.21, Node.js 22, …), the **environment variables** it reads, and whether you set its start command yourself (`isCommandManaged: false`, for runtimes like Node.js and Python) or the image owns it (databases, game servers).
+  </Step>
+  <Step title="Choose a plan">
+    ```bash
+    curl "https://api.storiza.store/apps-plans/?type=game_server"
+    ```
+
+    Plans set memory, CPU and storage. The plan's `type` must match the template's.
+
+    <Warning>
+      An app's plan cannot be changed after it is created. Pick one with room to grow.
+    </Warning>
+  </Step>
+  <Step title="Choose a location">
+    ```bash
+    curl https://api.storiza.store/apps-nodes/ \
+      -H "Authorization: Bearer $STORIZA_API_KEY"
+    ```
+
+    Each node is a machine in one city. Pick the one closest to your players or users and note its `id`.
+  </Step>
+  <Step title="Create the app">
+    ```bash
+    curl -X POST https://api.storiza.store/apps/ \
+      -H "Authorization: Bearer $STORIZA_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "hostname": "survival",
+        "templateId": "TEMPLATE_ID",
+        "planId": "PLAN_ID",
+        "nodeId": "NODE_ID",
+        "version": "1.21",
+        "env": { "DIFFICULTY": "normal" },
+        "duration": 30
+      }'
+    ```
+
+    - `hostname` is the name your app is known by; its public address is derived from it.
+    - `version` pins one of the template's versions. Leave it out for the template's default.
+    - `env` answers the variables the template declares. Values the template fixes cannot be set.
+
+    This pays from your balance. To pay at a checkout instead, send the same body plus `method` to `POST /apps/order` — see [Billing and payments](/concepts/billing-and-payments).
+  </Step>
+  <Step title="Start it">
+    A new app is created **stopped**, so a successful creation is never confused with a container that failed to boot. Start it:
+
+    ```bash
+    curl -X POST https://api.storiza.store/apps/APP_ID/lifecycle/start \
+      -H "Authorization: Bearer $STORIZA_API_KEY"
+    ```
+  </Step>
+  <Step title="Connect">
+    ```bash
+    curl https://api.storiza.store/apps/APP_ID \
+      -H "Authorization: Bearer $STORIZA_API_KEY"
+    ```
+
+    `endpoints` lists every way in, ready to use — for example `tcp://node-us1.storiza.app:25565` for a game, or `https://…storiza.app` for a web endpoint. Use `address` exactly as given: `tcp://` and `udp://` are not interchangeable.
+  </Step>
+</Steps>
+
+## Changing an app
+
+| You want to | Call | Takes effect |
+| --- | --- | --- |
+| Rename it or change its description | `PATCH /apps/{id}` | Immediately |
+| Change environment variables | `PATCH /apps/{id}/environment` | On the next restart |
+| Change the start command | `PATCH /apps/{id}/command` | On the next restart |
+| Add your own domain | `POST /apps/{id}/exposures`, then verify its DNS | On the next restart |
+| Join a private network with your other apps | `PUT /apps/{id}/group` | On the next restart |
+| Switch template or version | `POST /apps/{id}/reinstall` | Rebuilds the container |
+
+Settings that apply on the next restart are baked into the container when it is created, so follow them with `POST /apps/{id}/lifecycle/restart`.
+
+<Warning>
+  `PATCH /apps/{id}/environment` **replaces the whole set**. Any variable you leave out is removed — read the current values from `GET /apps/{id}` (`env`) and send back every one you can change, with your edit. Variables the template fixes are refused, so leave those out.
+</Warning>
+
+## Start commands for bots and runtimes
+
+For runtime templates (Node.js, Python, Java, …) you decide how the app starts. The command is a list of arguments and is **not** run through a shell, so `&&`, pipes and variables-in-strings need a shell asked for by name:
+
+```json
+{ "command": ["bash", "-lc", "npm install --omit=dev && exec node index.js"] }
+```
+
+That example installs dependencies from `package.json` on every start, then runs the bot. Dependencies are not installed for you otherwise — a Node.js app started with plain `node index.js` and no `node_modules` stops immediately with *Cannot find module*.
+
+`$NAME` and `${NAME}` are replaced with the app's environment variables before the container starts, so `$PORT` and your own variables work. `POST /apps/{id}/command/preview` shows exactly what a command will resolve to — and flags any variable that does not exist — before you save it.
+
+## Upload your code
+
+Use the [file API or SFTP](/guides/app-files-and-console) to put your project into the app's volume. The volume is the working directory, so relative paths in your code resolve against it.
+
+## Deleting an app
+
+`DELETE /apps/{id}` removes the app **and all the data in its volume**. Take a backup first (`POST /apps/{id}/backups`) if you might need it.
