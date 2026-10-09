@@ -17,6 +17,7 @@ import { fileURLToPath } from "node:url";
 import path from "node:path";
 import {
   DESCRIPTION_REWRITES,
+  EXPANDED_RELATIONS,
   HIDDEN_REQUEST_FIELDS,
   PUBLIC,
   PUBLISHED,
@@ -82,6 +83,107 @@ const hideRequestFields = (op, fields) => {
   if (!schema?.properties || !fields.length) return;
   for (const field of fields) delete schema.properties[field];
   if (schema.required) schema.required = schema.required.filter((name) => !fields.includes(name));
+};
+
+/** What each model is called in prose. */
+const LABELS = {
+  User: "user",
+  Subscription: "subscription",
+  Datacenter: "datacenter",
+  Currency: "currency",
+  Coupon: "coupon",
+  VPS: "server",
+  VPSPlan: "server plan",
+  VPSTemplate: "operating system template",
+  VPSBackupPlan: "backup plan",
+  VPSIP: "IP address",
+  SSHKey: "SSH key",
+  AppNode: "app node",
+  AppPlan: "app plan",
+  AppTemplate: "app template",
+  AppGroup: "app group",
+};
+const readable = (name) => LABELS[name] ?? name;
+
+/**
+ * Describe a related object the way the API really sends it.
+ *
+ * The API serialises a relation in full only when the endpoint loaded it, and
+ * otherwise as `{ "id": … }` — or `null` when there is none. The spec it
+ * generates declares every relation as the full object, so a reader cannot
+ * tell which to expect. Each one becomes "the full object, or only its id",
+ * saying so in words.
+ */
+const documentRelations = (spec) => {
+  let count = 0;
+  for (const schema of Object.values(spec.components?.schemas ?? {})) {
+    for (const [name, property] of Object.entries(schema.properties ?? {})) {
+      const [ref, rest, ...more] = property.allOf ?? [];
+      if (!ref?.$ref || more.length || JSON.stringify(rest) !== JSON.stringify({ properties: {} })) continue;
+
+      const target = ref.$ref.split("/").pop();
+      schema.properties[name] = {
+        description:
+          `The related ${readable(target)}. Sent **in full** when this endpoint includes it, ` +
+          "otherwise **only its `id`** — fetch it separately if you need the rest. `null` when there is none.",
+        nullable: true,
+        anyOf: [
+          { $ref: ref.$ref },
+          {
+            title: `${target} (id only)`,
+            type: "object",
+            properties: { id: { type: "string", description: `The ${readable(target)}'s id.` } },
+            required: ["id"],
+          },
+        ],
+      };
+      count++;
+    }
+  }
+  return count;
+};
+
+const schemaName = (ref) => ref?.split("/").pop();
+
+/** The model a response's `data` is — or is a list of — when it is one. */
+const dataModel = (schema) => {
+  const data = schema?.properties?.data;
+  const single = schemaName(data?.$ref ?? data?.allOf?.[0]?.$ref);
+  if (single) return { name: single, isList: false };
+  const item = data?.items;
+  const listed = schemaName(item?.$ref ?? item?.allOf?.[0]?.$ref);
+  return listed ? { name: listed, isList: true } : null;
+};
+
+/**
+ * Give the endpoints in `EXPANDED_RELATIONS` an example that matches what
+ * they send: the model's own example, with each relation they load replaced
+ * by that model's full example instead of `{ "id": … }`.
+ */
+const expandExamples = (spec) => {
+  const schemas = spec.components.schemas;
+  let count = 0;
+  for (const [key, relations] of Object.entries(EXPANDED_RELATIONS)) {
+    const [method, route] = key.split(" ");
+    const content = spec.paths[route]?.[method.toLowerCase()]?.responses?.["200"]?.content?.["application/json"];
+    const model = dataModel(content?.schema);
+    if (!model) throw new Error(`EXPANDED_RELATIONS: ${key} does not return a model`);
+
+    const base = structuredClone(schemas[model.name]?.example ?? {});
+    for (const relation of relations) {
+      const target = schemaName(schemas[model.name].properties?.[relation]?.anyOf?.[0]?.$ref);
+      if (!target) throw new Error(`EXPANDED_RELATIONS: ${model.name} has no relation "${relation}"`);
+      base[relation] = structuredClone(schemas[target]?.example ?? base[relation]);
+    }
+
+    const message = content.schema.properties?.message?.enum?.[0] ?? "OK";
+    const pagination = content.schema.properties?.pagination
+      ? { page: 1, limit: 10, offset: 0, total: 1, totalPages: 1 }
+      : undefined;
+    content.example = { success: true, message, data: model.isList ? [base] : base, ...(pagination && { pagination }) };
+    count++;
+  }
+  return count;
 };
 
 /** Every `#/components/...` reference reachable from `value`. */
@@ -197,11 +299,13 @@ const main = async () => {
     },
   };
   const schemas = pruneComponents(out);
+  const relations = documentRelations(out);
+  const expanded = expandExamples(out);
 
   await writeFile(OUT, `${JSON.stringify(out, null, 2)}\n`);
   await writeNavigation();
   console.log(
-    `openapi.json: ${found.size} operations in ${Object.keys(PUBLISHED).length} groups, ${schemas} schemas — ` +
+    `openapi.json: ${found.size} operations in ${Object.keys(PUBLISHED).length} groups, ${schemas} schemas, ${relations} relations (${expanded} endpoints expanded) — ` +
       `${unpublished.length} left unpublished (from ${source})`,
   );
   if (process.env.VERBOSE) console.log(`unpublished:\n  ${unpublished.join("\n  ")}`);

@@ -246,3 +246,16 @@ export const DESCRIPTION_REWRITES = [
 export const HIDDEN_REQUEST_FIELDS = {
   "POST /apps-groups/": ["ownerId"],
 };
+
+/**
+ * The relations each endpoint loads, and so sends **in full** — everything
+ * else comes back as `{ "id": … }`. Read from the handlers (`include:` /
+ * `findAccessibleApp(..., [...])` / `getVPSWithAuth`); update this when one
+ * of them changes. Their examples are rebuilt with these relations expanded.
+ */
+export const EXPANDED_RELATIONS = {
+  "GET /vps/": ["ip", "template", "owner", "subscription", "backupSubscription"],
+  "GET /vps/{vmId}": ["plan", "template", "datacenter", "ip", "owner", "subscription", "backupSubscription"],
+  "GET /apps/": ["subscription", "node", "template", "plan", "group"],
+  "GET /apps/{id}": ["subscription", "node", "template", "plan", "group"],
+};

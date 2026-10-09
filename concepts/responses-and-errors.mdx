@@ -25,6 +25,16 @@ Every successful response has the same shape:
 
 A few endpoints return a file rather than JSON — downloading a backup or an app's file. Their pages say so.
 
+### Related objects
+
+Many objects point at others — a subscription at its `user`, a server at its `datacenter`, `plan` and `subscription`. Each endpoint decides how much of a related object it sends:
+
+- **In full**, when the endpoint includes it. `GET /vps/{vmId}`, for example, sends the server's whole plan, datacenter and subscription.
+- **Only its `id`**, when it does not — `"user": { "id": "3f1c…" }`. Fetch the object itself if you need more.
+- **`null`** when there is nothing to point at, such as a server without the backup add-on.
+
+So check for the fields you need rather than assuming a related object is complete. In the API reference these fields are marked as one of the two shapes.
+
 ## Errors
 
 Every error has this shape, with a matching HTTP status:

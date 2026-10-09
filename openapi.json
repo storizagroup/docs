@@ -4044,6 +4044,164 @@
                     "data",
                     "pagination"
                   ]
+                },
+                "example": {
+                  "success": true,
+                  "message": "Apps",
+                  "data": [
+                    {
+                      "id": "00000000-0000-4000-8000-000000000000",
+                      "name": "Survival",
+                      "hostname": "mc-survival",
+                      "type": "game_server",
+                      "owner": {
+                        "id": "00000000-0000-4000-8000-000000000000"
+                      },
+                      "subscription": {
+                        "id": "00000000-0000-4000-8000-000000000000",
+                        "status": "active",
+                        "user": {
+                          "id": "00000000-0000-4000-8000-000000000000"
+                        },
+                        "provider": "balance",
+                        "method": "balance",
+                        "amount": "12",
+                        "currency": "USD",
+                        "durationDays": 30,
+                        "currentPeriodEnd": "2026-10-09T14:57:33.877Z",
+                        "supportsManagement": false,
+                        "metadata": {}
+                      },
+                      "node": {
+                        "id": "00000000-0000-4000-8000-000000000000",
+                        "name": "Kansas City 01",
+                        "slug": "appsus001",
+                        "description": "",
+                        "city": "Kansas City",
+                        "countryCode": "US",
+                        "region": "US",
+                        "state": "active",
+                        "fqdn": "node-appsus001.storiza.app",
+                        "createdAt": "2026-10-09T14:57:33.856Z",
+                        "schedulable": true
+                      },
+                      "template": {
+                        "id": "00000000-0000-4000-8000-000000000000",
+                        "name": "Minecraft (Paper)",
+                        "slug": "minecraft-paper",
+                        "type": "app",
+                        "tags": [],
+                        "versions": [
+                          {
+                            "name": "latest",
+                            "image": "itzg/minecraft-server",
+                            "tag": "latest"
+                          },
+                          {
+                            "name": "1.20",
+                            "description": "Pinned to Minecraft 1.20",
+                            "image": "itzg/minecraft-server",
+                            "tag": "java17",
+                            "environment": [
+                              {
+                                "key": "VERSION",
+                                "default": "1.20.4",
+                                "mutable": false
+                              }
+                            ]
+                          }
+                        ],
+                        "defaultVersion": "latest",
+                        "mountPoint": "/data",
+                        "exposures": [
+                          {
+                            "name": "game",
+                            "type": "minecraft",
+                            "containerPort": 25565,
+                            "description": "Minecraft client port",
+                            "required": true
+                          },
+                          {
+                            "name": "rcon",
+                            "type": "tcp",
+                            "containerPort": 25575,
+                            "description": "Remote console",
+                            "required": false
+                          }
+                        ],
+                        "environmentVariables": [
+                          {
+                            "key": "EULA",
+                            "default": "TRUE",
+                            "mutable": false
+                          },
+                          {
+                            "key": "MEMORY",
+                            "default": "2G",
+                            "mutable": true
+                          }
+                        ],
+                        "isCommandManaged": true,
+                        "stdin": true,
+                        "tty": false,
+                        "shell": "/bin/sh",
+                        "fileAccessAllowed": true,
+                        "backup": {
+                          "mechanism": "volume"
+                        },
+                        "isActive": true,
+                        "isPublic": true,
+                        "isPopular": false,
+                        "createdAt": "2026-10-09T14:57:33.872Z",
+                        "availableVersions": [
+                          "latest",
+                          "1.20"
+                        ],
+                        "requiredPortCount": 1,
+                        "hasHTTP": false
+                      },
+                      "version": "latest",
+                      "plan": {
+                        "id": "00000000-0000-4000-8000-000000000000",
+                        "name": "standard-2",
+                        "type": "app",
+                        "category": "standard",
+                        "price": "5",
+                        "duration": "2592000000",
+                        "memoryMB": 2048,
+                        "mcpu": 2000,
+                        "storageMB": 20480,
+                        "pidsLimit": 512,
+                        "maxPorts": 4,
+                        "maxBackups": 3,
+                        "customDomainsAllowed": true,
+                        "maxDomains": 1,
+                        "isActive": true,
+                        "isPublic": true,
+                        "isPopular": false,
+                        "createdAt": "2026-10-09T14:57:33.864Z"
+                      },
+                      "group": {
+                        "id": "00000000-0000-4000-8000-000000000000",
+                        "name": "backend",
+                        "ownerId": "00000000-0000-4000-8000-000000000000",
+                        "nodeId": "00000000-0000-4000-8000-000000000000",
+                        "createdAt": "2026-10-09T14:57:33.860Z"
+                      },
+                      "state": "running",
+                      "volumeQuotaMB": 0,
+                      "sftpUsername": "app-mc-survival",
+                      "createdAt": "2026-10-09T14:57:33.884Z",
+                      "sftpEnabled": true
+                    }
+                  ],
+                  "pagination": {
+                    "page": 1,
+                    "limit": 10,
+                    "offset": 0,
+                    "total": 1,
+                    "totalPages": 1
+                  }
                 }
               }
             }
@@ -4933,6 +5091,155 @@
                     "message",
                     "data"
                   ]
+                },
+                "example": {
+                  "success": true,
+                  "message": "App",
+                  "data": {
+                    "id": "00000000-0000-4000-8000-000000000000",
+                    "name": "Survival",
+                    "hostname": "mc-survival",
+                    "type": "game_server",
+                    "owner": {
+                      "id": "00000000-0000-4000-8000-000000000000"
+                    },
+                    "subscription": {
+                      "id": "00000000-0000-4000-8000-000000000000",
+                      "status": "active",
+                      "user": {
+                        "id": "00000000-0000-4000-8000-000000000000"
+                      },
+                      "provider": "balance",
+                      "method": "balance",
+                      "amount": "12",
+                      "currency": "USD",
+                      "durationDays": 30,
+                      "currentPeriodEnd": "2026-10-09T14:57:33.877Z",
+                      "supportsManagement": false,
+                      "metadata": {}
+                    },
+                    "node": {
+                      "id": "00000000-0000-4000-8000-000000000000",
+                      "name": "Kansas City 01",
+                      "slug": "appsus001",
+                      "description": "",
+                      "city": "Kansas City",
+                      "countryCode": "US",
+                      "region": "US",
+                      "state": "active",
+                      "fqdn": "node-appsus001.storiza.app",
+                      "createdAt": "2026-10-09T14:57:33.856Z",
+                      "schedulable": true
+                    },
+                    "template": {
+                      "id": "00000000-0000-4000-8000-000000000000",
+                      "name": "Minecraft (Paper)",
+                      "slug": "minecraft-paper",
+                      "type": "app",
+                      "tags": [],
+                      "versions": [
+                        {
+                          "name": "latest",
+                          "image": "itzg/minecraft-server",
+                          "tag": "latest"
+                        },
+                        {
+                          "name": "1.20",
+                          "description": "Pinned to Minecraft 1.20",
+                          "image": "itzg/minecraft-server",
+                          "tag": "java17",
+                          "environment": [
+                            {
+                              "key": "VERSION",
+                              "default": "1.20.4",
+                              "mutable": false
+                            }
+                          ]
+                        }
+                      ],
+                      "defaultVersion": "latest",
+                      "mountPoint": "/data",
+                      "exposures": [
+                        {
+                          "name": "game",
+                          "type": "minecraft",
+                          "containerPort": 25565,
+                          "description": "Minecraft client port",
+                          "required": true
+                        },
+                        {
+                          "name": "rcon",
+                          "type": "tcp",
+                          "containerPort": 25575,
+                          "description": "Remote console",
+                          "required": false
+                        }
+                      ],
+                      "environmentVariables": [
+                        {
+                          "key": "EULA",
+                          "default": "TRUE",
+                          "mutable": false
+                        },
+                        {
+                          "key": "MEMORY",
+                          "default": "2G",
+                          "mutable": true
+                        }
+                      ],
+                      "isCommandManaged": true,
+                      "stdin": true,
+                      "tty": false,
+                      "shell": "/bin/sh",
+                      "fileAccessAllowed": true,
+                      "backup": {
+                        "mechanism": "volume"
+                      },
+                      "isActive": true,
+                      "isPublic": true,
+                      "isPopular": false,
+                      "createdAt": "2026-10-09T14:57:33.872Z",
+                      "availableVersions": [
+                        "latest",
+                        "1.20"
+                      ],
+                      "requiredPortCount": 1,
+                      "hasHTTP": false
+                    },
+                    "version": "latest",
+                    "plan": {
+                      "id": "00000000-0000-4000-8000-000000000000",
+                      "name": "standard-2",
+                      "type": "app",
+                      "category": "standard",
+                      "price": "5",
+                      "duration": "2592000000",
+                      "memoryMB": 2048,
+                      "mcpu": 2000,
+                      "storageMB": 20480,
+                      "pidsLimit": 512,
+                      "maxPorts": 4,
+                      "maxBackups": 3,
+                      "customDomainsAllowed": true,
+                      "maxDomains": 1,
+                      "isActive": true,
+                      "isPublic": true,
+                      "isPopular": false,
+                      "createdAt": "2026-10-09T14:57:33.864Z"
+                    },
+                    "group": {
+                      "id": "00000000-0000-4000-8000-000000000000",
+                      "name": "backend",
+                      "ownerId": "00000000-0000-4000-8000-000000000000",
+                      "nodeId": "00000000-0000-4000-8000-000000000000",
+                      "createdAt": "2026-10-09T14:57:33.860Z"
+                    },
+                    "state": "running",
+                    "volumeQuotaMB": 0,
+                    "sftpUsername": "app-mc-survival",
+                    "createdAt": "2026-10-09T14:57:33.884Z",
+                    "sftpEnabled": true
+                  }
                 }
               }
             }
@@ -31277,6 +31584,161 @@
                     "data",
                     "pagination"
                   ]
+                },
+                "example": {
+                  "success": true,
+                  "message": "VPS list retrieved successfully",
+                  "data": [
+                    {
+                      "id": "00000000-0000-4000-8000-000000000000",
+                      "name": "Example VPS",
+                      "description": "Example VPS",
+                      "isCancelled": false,
+                      "suspended": false,
+                      "cancelledAt": null,
+                      "provisionCurrentStep": 0,
+                      "owner": {
+                        "id": "00000000-0000-4000-8000-000000000000",
+                        "username": "example",
+                        "email": "user@example.com",
+                        "firstname": "First",
+                        "lastname": "Last",
+                        "fullname": "First Last",
+                        "flags": "48",
+                        "theme": "system",
+                        "language": "en",
+                        "currency": "USD",
+                        "timezone": "Europe/London",
+                        "notificationPreferences": {
+                          "securityAlerts": true,
+                          "billingNotifications": true,
+                          "serverStatus": true,
+                          "productUpdates": true,
+                          "newsletter": false,
+                          "marketingEmails": false
+                        },
+                        "loginMethods": [],
+                        "twoFactorEnabled": false,
+                        "balance": "0",
+                        "accountLimits": {
+                          "apps": -1,
+                          "vps": -1,
+                          "priceByApp": -1,
+                          "priceByVPS": -1,
+                          "timeByApp": -1,
+                          "timeByVPS": -1,
+                          "mode": "unlimited"
+                        },
+                        "createdAt": "2026-10-09T14:57:33.835Z",
+                        "isVerified": false,
+                        "isSuspended": false,
+                        "isBanned": false,
+                        "isAdmin": false,
+                        "isSupport": false,
+                        "isBetaTester": false
+                      },
+                      "datacenter": {
+                        "id": "00000000-0000-4000-8000-000000000000"
+                      },
+                      "plan": {
+                        "id": "00000000-0000-4000-8000-000000000000"
+                      },
+                      "template": {
+                        "id": "00000000-0000-4000-8000-000000000000",
+                        "name": "Ubuntu",
+                        "description": "Ubuntu 24.04 LTS",
+                        "slug": "ubuntu",
+                        "iconURL": "https://cdn.example.com/icons/ubuntu.png",
+                        "category": "plain_os",
+                        "platform": "linux",
+                        "tags": [],
+                        "features": [],
+                        "versions": [
+                          {
+                            "slug": "24.04-lts",
+                            "label": "24.04 LTS",
+                            "isLatest": true,
+                            "isAutoSelect": true
+                          }
+                        ],
+                        "isActive": true,
+                        "isPopular": true,
+                        "defaultUsername": "root",
+                        "inputs": [],
+                        "metadata": {},
+                        "createdAt": "2026-10-09T14:57:33.993Z",
+                        "updatedAt": "2026-10-09T14:57:33.993Z"
+                      },
+                      "inputs": {},
+                      "ip": {
+                        "id": "00000000-0000-4000-8000-000000000000",
+                        "address": "192.168.1.10",
+                        "gateway": "192.168.1.1",
+                        "netmask": "24",
+                        "primaryDns": "8.8.8.8",
+                        "secondaryDns": "8.8.4.4",
+                        "datacenter": {
+                          "id": "00000000-0000-4000-8000-000000000000"
+                        },
+                        "node": "s000",
+                        "isActive": true,
+                        "createdAt": "2026-10-09T14:57:33.982Z",
+                        "updatedAt": "2026-10-09T14:57:33.982Z",
+                        "cidrNotation": "192.168.1.10/24"
+                      },
+                      "additionalIps": [],
+                      "backupPlan": null,
+                      "subscriptionId": "00000000-0000-4000-8000-000000000000",
+                      "subscription": {
+                        "id": "00000000-0000-4000-8000-000000000000",
+                        "status": "active",
+                        "user": {
+                          "id": "00000000-0000-4000-8000-000000000000"
+                        },
+                        "provider": "balance",
+                        "method": "balance",
+                        "amount": "12",
+                        "currency": "USD",
+                        "durationDays": 30,
+                        "currentPeriodEnd": "2026-10-09T14:57:33.877Z",
+                        "supportsManagement": false,
+                        "metadata": {}
+                      },
+                      "backupSubscription": {
+                        "id": "00000000-0000-4000-8000-000000000000",
+                        "status": "active",
+                        "user": {
+                          "id": "00000000-0000-4000-8000-000000000000"
+                        },
+                        "provider": "balance",
+                        "method": "balance",
+                        "amount": "12",
+                        "currency": "USD",
+                        "durationDays": 30,
+                        "currentPeriodEnd": "2026-10-09T14:57:33.877Z",
+                        "supportsManagement": false,
+                        "metadata": {}
+                      },
+                      "backupCancelled": false,
+                      "backupCancelledAt": null,
+                      "backupSubscriptionExpiresAt": null,
+                      "hostname": "example-hostname",
+                      "sshKey": null,
+                      "members": [],
+                      "createdAt": "2026-10-09T14:57:34.001Z",
+                      "updatedAt": "2026-10-09T14:57:34.001Z",
+                      "requiresProvision": false,
+                      "provision": null,
+                      "status": "Pending"
+                    }
+                  ],
+                  "pagination": {
+                    "page": 1,
+                    "limit": 10,
+                    "offset": 0,
+                    "total": 1,
+                    "totalPages": 1
+                  }
                 }
               }
             }
@@ -32213,6 +32675,194 @@
                     "message",
                     "data"
                   ]
+                },
+                "example": {
+                  "success": true,
+                  "message": "VPS information retrieved successfully",
+                  "data": {
+                    "id": "00000000-0000-4000-8000-000000000000",
+                    "name": "Example VPS",
+                    "description": "Example VPS",
+                    "isCancelled": false,
+                    "suspended": false,
+                    "cancelledAt": null,
+                    "provisionCurrentStep": 0,
+                    "owner": {
+                      "id": "00000000-0000-4000-8000-000000000000",
+                      "username": "example",
+                      "email": "user@example.com",
+                      "firstname": "First",
+                      "lastname": "Last",
+                      "fullname": "First Last",
+                      "flags": "48",
+                      "theme": "system",
+                      "language": "en",
+                      "currency": "USD",
+                      "timezone": "Europe/London",
+                      "notificationPreferences": {
+                        "securityAlerts": true,
+                        "billingNotifications": true,
+                        "serverStatus": true,
+                        "productUpdates": true,
+                        "newsletter": false,
+                        "marketingEmails": false
+                      },
+                      "loginMethods": [],
+                      "twoFactorEnabled": false,
+                      "balance": "0",
+                      "accountLimits": {
+                        "apps": -1,
+                        "vps": -1,
+                        "priceByApp": -1,
+                        "priceByVPS": -1,
+                        "timeByApp": -1,
+                        "timeByVPS": -1,
+                        "mode": "unlimited"
+                      },
+                      "createdAt": "2026-10-09T14:57:33.835Z",
+                      "isVerified": false,
+                      "isSuspended": false,
+                      "isBanned": false,
+                      "isAdmin": false,
+                      "isSupport": false,
+                      "isBetaTester": false
+                    },
+                    "datacenter": {
+                      "id": "00000000-0000-4000-8000-000000000000",
+                      "name": "Example Datacenter",
+                      "priority": 1,
+                      "location": "Example Location",
+                      "region": "EU",
+                      "country": "EG",
+                      "features": [
+                        {
+                          "feature": "Standard"
+                        }
+                      ],
+                      "isActive": true,
+                      "isMaintenanceMode": false,
+                      "isAvailable": true,
+                      "supportFreeTrial": false,
+                      "isForFreeTrialOnly": false,
+                      "createdAt": "2026-10-09T14:57:33.923Z"
+                    },
+                    "plan": {
+                      "id": "00000000-0000-4000-8000-000000000000",
+                      "name": "Basic VPS",
+                      "price": "9.99",
+                      "ram": {
+                        "size": 2048,
+                        "sizeGB": 2
+                      },
+                      "storage": {
+                        "size": 20480,
+                        "sizeGB": 20
+                      },
+                      "cpuCores": 2,
+                      "cpuThreads": 4,
+                      "cpu": {
+                        "cores": 2,
+                        "threads": 4
+                      },
+                      "networkSpeedLimitMbps": 1000,
+                      "bandwidthLimitGb": 4096,
+                      "maxSnapshots": 3,
+                      "duration": "2592000000",
+                      "able": true,
+                      "hidden": false,
+                      "outOfStock": false,
+                      "isAvailable": true,
+                      "createdAt": "2026-10-09T14:57:33.988Z",
+                      "updatedAt": "2026-10-09T14:57:33.988Z"
+                    },
+                    "template": {
+                      "id": "00000000-0000-4000-8000-000000000000",
+                      "name": "Ubuntu",
+                      "description": "Ubuntu 24.04 LTS",
+                      "slug": "ubuntu",
+                      "iconURL": "https://cdn.example.com/icons/ubuntu.png",
+                      "category": "plain_os",
+                      "platform": "linux",
+                      "tags": [],
+                      "features": [],
+                      "versions": [
+                        {
+                          "slug": "24.04-lts",
+                          "label": "24.04 LTS",
+                          "isLatest": true,
+                          "isAutoSelect": true
+                        }
+                      ],
+                      "isActive": true,
+                      "isPopular": true,
+                      "defaultUsername": "root",
+                      "inputs": [],
+                      "metadata": {},
+                      "createdAt": "2026-10-09T14:57:33.993Z",
+                      "updatedAt": "2026-10-09T14:57:33.993Z"
+                    },
+                    "inputs": {},
+                    "ip": {
+                      "id": "00000000-0000-4000-8000-000000000000",
+                      "address": "192.168.1.10",
+                      "gateway": "192.168.1.1",
+                      "netmask": "24",
+                      "primaryDns": "8.8.8.8",
+                      "secondaryDns": "8.8.4.4",
+                      "datacenter": {
+                        "id": "00000000-0000-4000-8000-000000000000"
+                      },
+                      "node": "s000",
+                      "isActive": true,
+                      "createdAt": "2026-10-09T14:57:33.982Z",
+                      "updatedAt": "2026-10-09T14:57:33.982Z",
+                      "cidrNotation": "192.168.1.10/24"
+                    },
+                    "additionalIps": [],
+                    "backupPlan": null,
+                    "subscriptionId": "00000000-0000-4000-8000-000000000000",
+                    "subscription": {
+                      "id": "00000000-0000-4000-8000-000000000000",
+                      "status": "active",
+                      "user": {
+                        "id": "00000000-0000-4000-8000-000000000000"
+                      },
+                      "provider": "balance",
+                      "method": "balance",
+                      "amount": "12",
+                      "currency": "USD",
+                      "durationDays": 30,
+                      "currentPeriodEnd": "2026-10-09T14:57:33.877Z",
+                      "supportsManagement": false,
+                      "metadata": {}
+                    },
+                    "backupSubscription": {
+                      "id": "00000000-0000-4000-8000-000000000000",
+                      "status": "active",
+                      "user": {
+                        "id": "00000000-0000-4000-8000-000000000000"
+                      },
+                      "provider": "balance",
+                      "method": "balance",
+                      "amount": "12",
+                      "currency": "USD",
+                      "durationDays": 30,
+                      "currentPeriodEnd": "2026-10-09T14:57:33.877Z",
+                      "supportsManagement": false,
+                      "metadata": {}
+                    },
+                    "backupCancelled": false,
+                    "backupCancelledAt": null,
+                    "backupSubscriptionExpiresAt": null,
+                    "hostname": "example-hostname",
+                    "sshKey": null,
+                    "members": [],
+                    "createdAt": "2026-10-09T14:57:34.001Z",
+                    "updatedAt": "2026-10-09T14:57:34.001Z",
+                    "requiresProvision": false,
+                    "provision": null,
+                    "status": "Pending"
+                  }
                 }
               }
             }
@@ -44443,12 +45093,24 @@
             "default": "active"
           },
           "user": {
-            "allOf": [
+            "description": "The related user. Sent **in full** when this endpoint includes it, otherwise **only its `id`** — fetch it separately if you need the rest. `null` when there is none.",
+            "nullable": true,
+            "anyOf": [
               {
                 "$ref": "#/components/schemas/User"
               },
               {
-                "properties": {}
+                "title": "User (id only)",
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "The user's id."
+                  }
+                },
+                "required": [
+                  "id"
+                ]
               }
             ]
           },
@@ -44565,42 +45227,90 @@
             "default": "app"
           },
           "owner": {
-            "allOf": [
+            "description": "The related user. Sent **in full** when this endpoint includes it, otherwise **only its `id`** — fetch it separately if you need the rest. `null` when there is none.",
+            "nullable": true,
+            "anyOf": [
               {
                 "$ref": "#/components/schemas/User"
               },
               {
-                "properties": {}
+                "title": "User (id only)",
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "The user's id."
+                  }
+                },
+                "required": [
+                  "id"
+                ]
               }
             ]
           },
           "subscription": {
-            "allOf": [
+            "description": "The related subscription. Sent **in full** when this endpoint includes it, otherwise **only its `id`** — fetch it separately if you need the rest. `null` when there is none.",
+            "nullable": true,
+            "anyOf": [
               {
                 "$ref": "#/components/schemas/Subscription"
               },
               {
-                "properties": {}
+                "title": "Subscription (id only)",
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "The subscription's id."
+                  }
+                },
+                "required": [
+                  "id"
+                ]
               }
             ]
           },
           "node": {
-            "allOf": [
+            "description": "The related app node. Sent **in full** when this endpoint includes it, otherwise **only its `id`** — fetch it separately if you need the rest. `null` when there is none.",
+            "nullable": true,
+            "anyOf": [
               {
                 "$ref": "#/components/schemas/AppNode"
               },
               {
-                "properties": {}
+                "title": "AppNode (id only)",
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "The app node's id."
+                  }
+                },
+                "required": [
+                  "id"
+                ]
               }
             ]
           },
           "template": {
-            "allOf": [
+            "description": "The related app template. Sent **in full** when this endpoint includes it, otherwise **only its `id`** — fetch it separately if you need the rest. `null` when there is none.",
+            "nullable": true,
+            "anyOf": [
               {
                 "$ref": "#/components/schemas/AppTemplate"
               },
               {
-                "properties": {}
+                "title": "AppTemplate (id only)",
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "The app template's id."
+                  }
+                },
+                "required": [
+                  "id"
+                ]
               }
             ]
           },
@@ -44609,12 +45319,24 @@
             "maxLength": 63
           },
           "plan": {
-            "allOf": [
+            "description": "The related app plan. Sent **in full** when this endpoint includes it, otherwise **only its `id`** — fetch it separately if you need the rest. `null` when there is none.",
+            "nullable": true,
+            "anyOf": [
               {
                 "$ref": "#/components/schemas/AppPlan"
               },
               {
-                "properties": {}
+                "title": "AppPlan (id only)",
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "The app plan's id."
+                  }
+                },
+                "required": [
+                  "id"
+                ]
               }
             ]
           },
@@ -44623,12 +45345,24 @@
             "nullable": true
           },
           "group": {
-            "allOf": [
+            "description": "The related app group. Sent **in full** when this endpoint includes it, otherwise **only its `id`** — fetch it separately if you need the rest. `null` when there is none.",
+            "nullable": true,
+            "anyOf": [
               {
                 "$ref": "#/components/schemas/AppGroup"
               },
               {
-                "properties": {}
+                "title": "AppGroup (id only)",
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "The app group's id."
+                  }
+                },
+                "required": [
+                  "id"
+                ]
               }
             ]
           },
@@ -45087,12 +45821,24 @@
             "maxLength": 64
           },
           "currency": {
-            "allOf": [
+            "description": "The related currency. Sent **in full** when this endpoint includes it, otherwise **only its `id`** — fetch it separately if you need the rest. `null` when there is none.",
+            "nullable": true,
+            "anyOf": [
               {
                 "$ref": "#/components/schemas/Currency"
               },
               {
-                "properties": {}
+                "title": "Currency (id only)",
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "The currency's id."
+                  }
+                },
+                "required": [
+                  "id"
+                ]
               }
             ]
           },
@@ -45118,22 +45864,46 @@
             "type": "number"
           },
           "user": {
-            "allOf": [
+            "description": "The related user. Sent **in full** when this endpoint includes it, otherwise **only its `id`** — fetch it separately if you need the rest. `null` when there is none.",
+            "nullable": true,
+            "anyOf": [
               {
                 "$ref": "#/components/schemas/User"
               },
               {
-                "properties": {}
+                "title": "User (id only)",
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "The user's id."
+                  }
+                },
+                "required": [
+                  "id"
+                ]
               }
             ]
           },
           "coupon": {
-            "allOf": [
+            "description": "The related coupon. Sent **in full** when this endpoint includes it, otherwise **only its `id`** — fetch it separately if you need the rest. `null` when there is none.",
+            "nullable": true,
+            "anyOf": [
               {
                 "$ref": "#/components/schemas/Coupon"
               },
               {
-                "properties": {}
+                "title": "Coupon (id only)",
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "The coupon's id."
+                  }
+                },
+                "required": [
+                  "id"
+                ]
               }
             ]
           },
@@ -45365,12 +46135,24 @@
             "type": "string"
           },
           "user": {
-            "allOf": [
+            "description": "The related user. Sent **in full** when this endpoint includes it, otherwise **only its `id`** — fetch it separately if you need the rest. `null` when there is none.",
+            "nullable": true,
+            "anyOf": [
               {
                 "$ref": "#/components/schemas/User"
               },
               {
-                "properties": {}
+                "title": "User (id only)",
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "The user's id."
+                  }
+                },
+                "required": [
+                  "id"
+                ]
               }
             ]
           },
@@ -45417,12 +46199,24 @@
             "type": "number"
           },
           "coupon": {
-            "allOf": [
+            "description": "The related coupon. Sent **in full** when this endpoint includes it, otherwise **only its `id`** — fetch it separately if you need the rest. `null` when there is none.",
+            "nullable": true,
+            "anyOf": [
               {
                 "$ref": "#/components/schemas/Coupon"
               },
               {
-                "properties": {}
+                "title": "Coupon (id only)",
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "The coupon's id."
+                  }
+                },
+                "required": [
+                  "id"
+                ]
               }
             ]
           },
@@ -45663,12 +46457,24 @@
             "maxLength": 45
           },
           "datacenter": {
-            "allOf": [
+            "description": "The related datacenter. Sent **in full** when this endpoint includes it, otherwise **only its `id`** — fetch it separately if you need the rest. `null` when there is none.",
+            "nullable": true,
+            "anyOf": [
               {
                 "$ref": "#/components/schemas/Datacenter"
               },
               {
-                "properties": {}
+                "title": "Datacenter (id only)",
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "The datacenter's id."
+                  }
+                },
+                "required": [
+                  "id"
+                ]
               }
             ]
           },
@@ -46173,42 +46979,90 @@
             "nullable": true
           },
           "owner": {
-            "allOf": [
+            "description": "The related user. Sent **in full** when this endpoint includes it, otherwise **only its `id`** — fetch it separately if you need the rest. `null` when there is none.",
+            "nullable": true,
+            "anyOf": [
               {
                 "$ref": "#/components/schemas/User"
               },
               {
-                "properties": {}
+                "title": "User (id only)",
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "The user's id."
+                  }
+                },
+                "required": [
+                  "id"
+                ]
               }
             ]
           },
           "datacenter": {
-            "allOf": [
+            "description": "The related datacenter. Sent **in full** when this endpoint includes it, otherwise **only its `id`** — fetch it separately if you need the rest. `null` when there is none.",
+            "nullable": true,
+            "anyOf": [
               {
                 "$ref": "#/components/schemas/Datacenter"
               },
               {
-                "properties": {}
+                "title": "Datacenter (id only)",
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "The datacenter's id."
+                  }
+                },
+                "required": [
+                  "id"
+                ]
               }
             ]
           },
           "plan": {
-            "allOf": [
+            "description": "The related server plan. Sent **in full** when this endpoint includes it, otherwise **only its `id`** — fetch it separately if you need the rest. `null` when there is none.",
+            "nullable": true,
+            "anyOf": [
               {
                 "$ref": "#/components/schemas/VPSPlan"
               },
               {
-                "properties": {}
+                "title": "VPSPlan (id only)",
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "The server plan's id."
+                  }
+                },
+                "required": [
+                  "id"
+                ]
               }
             ]
           },
           "template": {
-            "allOf": [
+            "description": "The related operating system template. Sent **in full** when this endpoint includes it, otherwise **only its `id`** — fetch it separately if you need the rest. `null` when there is none.",
+            "nullable": true,
+            "anyOf": [
               {
                 "$ref": "#/components/schemas/VPSTemplate"
               },
               {
-                "properties": {}
+                "title": "VPSTemplate (id only)",
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "The operating system template's id."
+                  }
+                },
+                "required": [
+                  "id"
+                ]
               }
             ]
           },
@@ -46223,12 +47077,24 @@
             "default": {}
           },
           "ip": {
-            "allOf": [
+            "description": "The related IP address. Sent **in full** when this endpoint includes it, otherwise **only its `id`** — fetch it separately if you need the rest. `null` when there is none.",
+            "nullable": true,
+            "anyOf": [
               {
                 "$ref": "#/components/schemas/VPSIP"
               },
               {
-                "properties": {}
+                "title": "VPSIP (id only)",
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "The IP address's id."
+                  }
+                },
+                "required": [
+                  "id"
+                ]
               }
             ]
           },
@@ -46240,12 +47106,24 @@
             "default": []
           },
           "backupPlan": {
-            "allOf": [
+            "description": "The related backup plan. Sent **in full** when this endpoint includes it, otherwise **only its `id`** — fetch it separately if you need the rest. `null` when there is none.",
+            "nullable": true,
+            "anyOf": [
               {
                 "$ref": "#/components/schemas/VPSBackupPlan"
               },
               {
-                "properties": {}
+                "title": "VPSBackupPlan (id only)",
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "The backup plan's id."
+                  }
+                },
+                "required": [
+                  "id"
+                ]
               }
             ]
           },
@@ -46253,12 +47131,24 @@
             "type": "string"
           },
           "subscription": {
-            "allOf": [
+            "description": "The related subscription. Sent **in full** when this endpoint includes it, otherwise **only its `id`** — fetch it separately if you need the rest. `null` when there is none.",
+            "nullable": true,
+            "anyOf": [
               {
                 "$ref": "#/components/schemas/Subscription"
               },
               {
-                "properties": {}
+                "title": "Subscription (id only)",
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "The subscription's id."
+                  }
+                },
+                "required": [
+                  "id"
+                ]
               }
             ]
           },
@@ -46266,12 +47156,24 @@
             "type": "string"
           },
           "backupSubscription": {
-            "allOf": [
+            "description": "The related subscription. Sent **in full** when this endpoint includes it, otherwise **only its `id`** — fetch it separately if you need the rest. `null` when there is none.",
+            "nullable": true,
+            "anyOf": [
               {
                 "$ref": "#/components/schemas/Subscription"
               },
               {
-                "properties": {}
+                "title": "Subscription (id only)",
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "The subscription's id."
+                  }
+                },
+                "required": [
+                  "id"
+                ]
               }
             ]
           },
@@ -46298,12 +47200,24 @@
             "format": "uuid"
           },
           "sshKey": {
-            "allOf": [
+            "description": "The related SSH key. Sent **in full** when this endpoint includes it, otherwise **only its `id`** — fetch it separately if you need the rest. `null` when there is none.",
+            "nullable": true,
+            "anyOf": [
               {
                 "$ref": "#/components/schemas/SSHKey"
               },
               {
-                "properties": {}
+                "title": "SSHKey (id only)",
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "The SSH key's id."
+                  }
+                },
+                "required": [
+                  "id"
+                ]
               }
             ]
           },
@@ -46436,12 +47350,24 @@
             "type": "boolean"
           },
           "vps": {
-            "allOf": [
+            "description": "The related server. Sent **in full** when this endpoint includes it, otherwise **only its `id`** — fetch it separately if you need the rest. `null` when there is none.",
+            "nullable": true,
+            "anyOf": [
               {
                 "$ref": "#/components/schemas/VPS"
               },
               {
-                "properties": {}
+                "title": "VPS (id only)",
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "The server's id."
+                  }
+                },
+                "required": [
+                  "id"
+                ]
               }
             ]
           },
@@ -46552,12 +47478,24 @@
             "type": "boolean"
           },
           "vps": {
-            "allOf": [
+            "description": "The related server. Sent **in full** when this endpoint includes it, otherwise **only its `id`** — fetch it separately if you need the rest. `null` when there is none.",
+            "nullable": true,
+            "anyOf": [
               {
                 "$ref": "#/components/schemas/VPS"
               },
               {
-                "properties": {}
+                "title": "VPS (id only)",
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "The server's id."
+                  }
+                },
+                "required": [
+                  "id"
+                ]
               }
             ]
           },

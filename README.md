@@ -46,6 +46,7 @@ What gets published is decided in `scripts/openapi-rules.mjs`, and it is an **al
 - The script stops without writing anything if a listed endpoint has disappeared from the API, or cannot be called with an API key.
 - `PUBLIC` marks the catalog endpoints that need no key; `SELF_AUTHENTICATED` the VPS routes that take a key although the spec does not say so.
 - `DESCRIPTION_REWRITES` and `HIDDEN_REQUEST_FIELDS` remove wording and fields about internals and staff-only behaviour from the API's own descriptions.
+- **Related objects** (a subscription's `user`, a server's `datacenter`, …) are described as *the full object or only its `id`*, because the API sends a relation in full only when the endpoint loads it. `EXPANDED_RELATIONS` lists the endpoints that load relations and which ones — their examples are rebuilt with those relations in full. When a handler starts or stops including a relation, update that list.
 - WebSocket and streaming endpoints are documented in `guides/realtime.mdx` instead — a playground cannot open them.
 
 ## Deploying
